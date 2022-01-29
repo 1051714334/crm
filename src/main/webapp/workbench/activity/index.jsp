@@ -81,6 +81,29 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
             $("#hidden-endDate").val($.trim($("#search-endDate").val()));
             pageList(1,2)
         });
+
+		$("#xp").click(function () {
+            $("input[name=xz]").prop("checked",this.checked);
+        });
+        $("#activityBody").on("click",$("input[name=xz]"),function () {
+           $("#xp").prop("checked",$("input[name=xz]").length==$("input[name=xz]:checked").length);
+        });
+        $("#deleteBut").click(function () {
+			var $xz=$("input[name=xz]:checked");
+			if($xz.length==0){
+				alert("请下方勾选删除的市场活动对象");
+			}else{
+				var param="";
+			for(var i=0;i<$xz.length;i++){
+				param +="id="+$($xz[i]).val();
+				if(i<$xz.length-1){
+					param +="&";
+				}
+			 }
+				alert(param);
+			}
+		});
+
 	});
 	function pageList(pageNo,pageSize){
         $("#search-name").val($.trim($("#hidden-name").val()));
@@ -103,7 +126,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                 var html="";
                 $.each(data.dataList,function (i,n) {
                 html+='<tr class="active">';
-                html+='<td><input type="checkbox" id="'+n.id+'"/></td>';
+                html+='<td><input name="xz" type="checkbox" value="'+n.id+'"/></td>';
                 html+='<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.jsp\';">'+n.name+'</a></td>';
                 html+='<td>'+n.owner+'</td>';
                 html+='<td>'+n.startDate+'</td>';
@@ -321,7 +344,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					<!-- data-toggle="modal" data-target="#createActivityModal"-->
 				  <button type="button" class="btn btn-primary"id="addBut"><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-danger" id="deleteBut"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				
 			</div>
@@ -329,7 +352,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				<table class="table table-hover">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td><input type="checkbox" /></td>
+							<td><input id="xp" type="checkbox" /></td>
 							<td>名称</td>
                             <td>所有者</td>
 							<td>开始日期</td>
