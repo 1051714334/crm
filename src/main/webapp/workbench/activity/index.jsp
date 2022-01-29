@@ -75,10 +75,18 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
         });
 		pageList(1,2);
 		$("#searchBut").click(function () {
+		    $("#hidden-name").val($.trim($("#search-name").val()));
+            $("#hidden-owner").val($.trim($("#search-owner").val()));
+            $("#hidden-startDate").val($.trim($("#search-startDate").val()));
+            $("#hidden-endDate").val($.trim($("#search-endDate").val()));
             pageList(1,2)
         });
 	});
 	function pageList(pageNo,pageSize){
+        $("#search-name").val($.trim($("#hidden-name").val()));
+        $("#search-owner").val($.trim($("#hidden-owner").val()));
+        $("#search-startDate").val($.trim($("#hidden-startDate").val()));
+        $("#search-endDate").val($.trim($("#hidden-endDate").val()));
 	    $.ajax({
             url:"workbench/activity/pageList.do",
             data:{
@@ -103,8 +111,9 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                 html+='</tr>'
                 });
                 $("#activityBody").html(html);
-                var totalPages=data.total%pageSize==0?data.total/pageSize:parseInt(data.total/pageSize)+1;
-				$("#activityPage").bs_pagination({
+                var totalPages=data.total%pageSize==0?data.total/pageSize:(parseInt(data.total/pageSize)+1);
+				//alert(data.total);
+                $("#activityPage").bs_pagination({
 					currentPage: pageNo, // 页码
 					rowsPerPage: pageSize, // 每页显示的记录条数
 					maxRowsPerPage: 20, // 每页最多显示的记录条数
@@ -128,7 +137,10 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 </script>
 </head>
 <body>
-
+<input type="hidden" id="hidden-name"/>
+<input type="hidden" id="hidden-owner"/>
+<input type="hidden" id="hidden-startDate"/>
+<input type="hidden" id="hidden-endDate"/>
 	<!-- 创建市场活动的模态窗口 -->
 	<div class="modal fade" id="createActivityModal" role="dialog">
 		<div class="modal-dialog" role="document" style="width: 85%;">

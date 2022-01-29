@@ -3,15 +3,15 @@ package com.bjpowernode.crm.vo;
 import java.util.List;
 
 public class PaginationVo<T> {
-    private int tatol;
+    private int total;
     private List<T> dataList;
 
-    public int getTatol() {
-        return tatol;
+    public int getTotal() {
+        return total;
     }
 
-    public void setTatol(int tatol) {
-        this.tatol = tatol;
+    public void setTotal(int total) {
+        this.total = total;
     }
 
     public List<T> getDataList() {
