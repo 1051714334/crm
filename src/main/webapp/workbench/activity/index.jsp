@@ -93,7 +93,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			if($xz.length==0){
 				alert("请下方勾选删除的市场活动对象");
 			}else{
-			    if(confirm("确认要删除所选记录？")){
+			    if(confirm("确认要删除所选记录")){
                     var param="";
                     for(var i=0;i<$xz.length;i++){
                         param +="id="+$($xz[i]).val();
