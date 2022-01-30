@@ -10,7 +10,6 @@
 	<select id="getUserList" resultType="user">
         select * from tbl_user
     </select>
-	
 </mapper>
 
 
