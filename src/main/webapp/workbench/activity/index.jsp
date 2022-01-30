@@ -93,19 +93,37 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			if($xz.length==0){
 				alert("请下方勾选删除的市场活动对象");
 			}else{
-				var param="";
-			for(var i=0;i<$xz.length;i++){
-				param +="id="+$($xz[i]).val();
-				if(i<$xz.length-1){
-					param +="&";
-				}
-			 }
-				alert(param);
+			    if(confirm("确认要删除活动")){
+                    var param="";
+                    for(var i=0;i<$xz.length;i++){
+                        param +="id="+$($xz[i]).val();
+                        if(i<$xz.length-1){
+                            param +="&";
+                        }
+                    }
+                    //alert(param);
+                    $.ajax({
+                        url:"workbench/activity/delete.do",
+                        data:param,
+                        type:"post",
+                        dataType:"json",
+                        success:function (data) {
+                            if(data.success){
+                                pageList(1,2);
+                            }else{
+                                alert("删除失败");
+                            }
+                        }
+                    })
+                }
+
+
 			}
 		});
 
 	});
 	function pageList(pageNo,pageSize){
+        $("#xp").prop("checked",false);
         $("#search-name").val($.trim($("#hidden-name").val()));
         $("#search-owner").val($.trim($("#hidden-owner").val()));
         $("#search-startDate").val($.trim($("#hidden-startDate").val()));

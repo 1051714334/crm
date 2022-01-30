@@ -40,6 +40,7 @@
         <url-pattern>/workbench/activity/getUserList.do</url-pattern>
         <url-pattern>/workbench/activity/save.do</url-pattern>
         <url-pattern>/workbench/activity/pageList.do</url-pattern>
+        <url-pattern>/workbench/activity/delete.do</url-pattern>
     </servlet-mapping>
     <!--
     add/create:跳转到添加操作，或者打开添加操作模态窗口

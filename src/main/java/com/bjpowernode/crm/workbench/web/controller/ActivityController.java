@@ -31,7 +31,16 @@ public class ActivityController extends HttpServlet {
             save(request,response);
         }else if("/workbench/activity/pageList.do".equals(path)){
             pageList(request,response);
+        }else if("/workbench/activity/delete.do".equals(path)){
+            delete(request,response);
         }
+    }
+
+    private void delete(HttpServletRequest request, HttpServletResponse response) {
+        ActivityService as= (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        String ids[]=request.getParameterValues("id");
+        boolean flag=as.delete(ids);
+        PrintJson.printJsonFlag(response,flag);
     }
 
     private void pageList(HttpServletRequest request, HttpServletResponse response) {
