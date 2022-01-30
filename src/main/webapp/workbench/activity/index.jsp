@@ -64,7 +64,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                 success:function (data) {
                    if(data.success){
                        //刷新市场活动信息列表（局部刷新）
-					   pageList(1,2);
+					   pageList(1,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
                         $("#activityAddForm")[0].reset();
                        $("#createActivityModal").modal("hide");
                    }else{
@@ -80,7 +80,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
             $("#hidden-owner").val($.trim($("#search-owner").val()));
             $("#hidden-startDate").val($.trim($("#search-startDate").val()));
             $("#hidden-endDate").val($.trim($("#search-endDate").val()));
-            pageList(1,2)
+			pageList(1,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
         });
 
 		$("#xp").click(function () {
@@ -110,7 +110,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                         dataType:"json",
                         success:function (data) {
                             if(data.success){
-                                pageList(1,2);
+								pageList(1,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
                             }else{
                                 alert("删除失败");
                             }
@@ -168,7 +168,8 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				dataType:"json",
 				success:function (data) {
 					if(data.success){
-						pageList(1,2);
+						pageList($("#activityPage").bs_pagination('getOption', 'currentPage')
+								,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
 						$("#editActivityModal").modal("hide");
 					}else{
 						alert("更新失败");
