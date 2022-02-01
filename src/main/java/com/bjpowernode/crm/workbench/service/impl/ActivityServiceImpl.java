@@ -7,6 +7,7 @@ import com.bjpowernode.crm.vo.PaginationVo;
 import com.bjpowernode.crm.workbench.dao.ActivityDao;
 import com.bjpowernode.crm.workbench.dao.ActivityRemarkDao;
 import com.bjpowernode.crm.workbench.domain.Activity;
+import com.bjpowernode.crm.workbench.domain.ActivityRemark;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 
 import java.util.HashMap;
@@ -66,5 +67,15 @@ public class ActivityServiceImpl implements ActivityService {
             flag=false;
         }
         return flag;
+    }
+
+    public Activity detail(String id) {
+        Activity activity=activityDao.detail(id);
+        return activity;
+    }
+
+    public List<ActivityRemark> showRemarkList(String activityId) {
+        List<ActivityRemark> arList=activityRemarkDao.showRemarkList(activityId);
+        return arList;
     }
 }

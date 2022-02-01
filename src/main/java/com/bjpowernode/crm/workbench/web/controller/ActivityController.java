@@ -9,6 +9,7 @@ import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
 import com.bjpowernode.crm.vo.PaginationVo;
 import com.bjpowernode.crm.workbench.domain.Activity;
+import com.bjpowernode.crm.workbench.domain.ActivityRemark;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 import com.bjpowernode.crm.workbench.service.impl.ActivityServiceImpl;
 
@@ -37,7 +38,26 @@ public class ActivityController extends HttpServlet {
             getUserListAndActivity(request,response);
         }else if("/workbench/activity/update.do".equals(path)){
             update(request,response);
+        }else if("/workbench/activity/detail.do".equals(path)){
+            detail(request,response);
+        }else if("/workbench/activity/showRemarkList.do".equals(path)){
+            showRemarkList(request,response);
         }
+    }
+
+    private void showRemarkList(HttpServletRequest request, HttpServletResponse response) {
+        String activityId=request.getParameter("activityId");
+        ActivityService as= (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        List<ActivityRemark> arList=as.showRemarkList(activityId);
+        PrintJson.printJsonObj(response,arList);
+    }
+
+    private void detail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        String id=request.getParameter("id");
+        ActivityService as= (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+       Activity activity=as.detail(id);
+       request.setAttribute("a",activity);
+        request.getRequestDispatcher("/workbench/activity/detail.jsp").forward(request,response);
     }
 
     private void update(HttpServletRequest request, HttpServletResponse response) {
