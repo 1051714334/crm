@@ -59,7 +59,8 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>ClueController</servlet-name>
-        <url-pattern>/workbench/clue/xxx.do</url-pattern>
+        <url-pattern>/workbench/clue/getUserList.do</url-pattern>
+        <url-pattern>/workbench/clue/save.do</url-pattern>
     </servlet-mapping>
     <!--
     add/create:跳转到添加操作，或者打开添加操作模态窗口
