@@ -103,4 +103,14 @@ public class ActivityServiceImpl implements ActivityService {
         if(count!=1){flag=false;}
         return flag;
     }
+
+    public List<Activity> getActivityListByClueId(String clueId) {
+        List<Activity> aList=activityDao.getActivityListByClueId(clueId);
+        return aList;
+    }
+
+    public List<Activity> getActivityListByNameAndNotByClueId(Map<String, String> map) {
+        List<Activity> aList=activityDao.getActivityListByNameAndNotByClueId(map);
+        return aList;
+    }
 }

@@ -8,6 +8,7 @@ import com.bjpowernode.crm.utils.PrintJson;
 import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
 import com.bjpowernode.crm.vo.PaginationVo;
+import com.bjpowernode.crm.workbench.dao.ActivityDao;
 import com.bjpowernode.crm.workbench.domain.Activity;
 import com.bjpowernode.crm.workbench.domain.ActivityRemark;
 import com.bjpowernode.crm.workbench.domain.Clue;
@@ -33,7 +34,58 @@ public class ClueController extends HttpServlet {
             getUserList(request, response);
         } else if ("/workbench/clue/save.do".equals(path)) {
             save(request, response);
+        }else if("/workbench/clue/detail.do".equals(path)){
+            detail(request,response);
+        }else if("/workbench/clue/getActivityListByClueId.do".equals(path)){
+            getActivityListByClueId(request,response);
+        }else if("/workbench/clue/unbund.do".equals(path)){
+            unbund(request,response);
+        }else if("/workbench/clue/getActivityListByNameAndNotByClueId.do".equals(path)){
+            getActivityListByNameAndNotByClueId(request,response);
+        }else if("/workbench/clue/bund.do".equals(path)){
+            bund(request,response);
         }
+    }
+
+    private void bund(HttpServletRequest request, HttpServletResponse response) {
+        String cid=request.getParameter("cid");
+        String aid[]=request.getParameterValues("aid");
+        ClueService cs= (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+        boolean flag=cs.bund(cid,aid);
+        PrintJson.printJsonFlag(response,flag);
+    }
+
+    private void getActivityListByNameAndNotByClueId(HttpServletRequest request, HttpServletResponse response) {
+    ActivityService as= (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+    String aname=request.getParameter("aname");
+    String clueId=request.getParameter("clueId");
+    Map<String,String> map=new HashMap<String,String>();
+    map.put("aname",aname);
+    map.put("clueId",clueId);
+    List<Activity> aList=as.getActivityListByNameAndNotByClueId(map);
+    PrintJson.printJsonObj(response,aList);
+    }
+
+    private void unbund(HttpServletRequest request, HttpServletResponse response) {
+        ClueService cs= (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+        String id=request.getParameter("id");
+        boolean flag=cs.unbund(id);
+        PrintJson.printJsonFlag(response,flag);
+    }
+
+    private void getActivityListByClueId(HttpServletRequest request, HttpServletResponse response) {
+    ActivityService as= (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+    String clueId=request.getParameter("clueId");
+    List<Activity> aList=as.getActivityListByClueId(clueId);
+    PrintJson.printJsonObj(response,aList);
+    }
+
+    private void detail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        String id=request.getParameter("id");
+        ClueService cs= (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+        Clue clue=cs.detail(id);
+        request.setAttribute("c",clue);
+        request.getRequestDispatcher("/workbench/clue/detail.jsp").forward(request,response);
     }
 
     private void save(HttpServletRequest request, HttpServletResponse response) {
