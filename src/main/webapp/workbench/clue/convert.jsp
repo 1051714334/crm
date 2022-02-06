@@ -37,32 +37,47 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		});
 		$("#openSearchModalBtn").click(function () {
             $("#searchActivityModal").modal("show");
-		    $("#aname").keydown(function (event) {
-                if(event.keyCode==13){
-                    $.ajax({
-                        url:"workbench/clue/getActivityListByName.do",
-                        data:{
-                            "aname":$.trim($("#aname").val())
-                        },
-                        type:"get",
-                        dataType:"json",
-                        success:function (data) {
-                            var html='';
-                            $.each(data,function (i,n) {
-                                html +='<tr>';
-                                html +='<td><input id="'+n.id+'" type="radio" name="activity"/></td>';
-                                html +='<td>'+n.name+'</td>';
-                                html +='<td>'+n.startDate+'</td>';
-                                html +='<td>'+n.endDate+'</td>';
-                                html +='<td>'+n.owner+'</td>';
-                                html +='</tr>';
-                            });
-                            $("#activitySearchBody").html(html);
-                        }
-                    });
-                    return false;
-                };
-            });
+        });
+        $("#aname").keydown(function (event) {
+            if(event.keyCode==13){
+                $.ajax({
+                    url:"workbench/clue/getActivityListByName.do",
+                    data:{
+                        "aname":$.trim($("#aname").val())
+                    },
+                    type:"get",
+                    dataType:"json",
+                    success:function (data) {
+                        var html='';
+                        $.each(data,function (i,n) {
+                            html +='<tr>';
+                            html +='<td><input value="'+n.id+'" type="radio" name="xz"/></td>';
+                            html +='<td id="'+n.id+'">'+n.name+'</td>';
+                            html +='<td>'+n.startDate+'</td>';
+                            html +='<td>'+n.endDate+'</td>';
+                            html +='<td>'+n.owner+'</td>';
+                            html +='</tr>';
+                        });
+                        $("#activitySearchBody").html(html);
+                    }
+                });
+                return false;
+            };
+        });
+        $("#submitActivityBtn").click(function () {
+            var $xz=$("input[name=xz]:checked");
+            var id=$xz.val();
+            var name=$("#"+id).html();
+           $("#activityName").val(name);
+           $("#activityId").val(id);
+            $("#searchActivityModal").modal("hide");
+        });
+        $("#convertBtn").click(function () {
+            if($("#isCreateTransaction").prop("checked")){
+                window.location.href="workbench/clue/convert.do";
+            }else{
+                window.location.href="workbench/clue/convert.do?clueId=";
+            }
 
         });
 	});
@@ -119,7 +134,11 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						</tbody>
 					</table>
 				</div>
-			</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="submitActivityBtn">提交</button>
+                </div>
+            </div>
 		</div>
 	</div>
 
@@ -162,7 +181,8 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		  </div>
 		  <div class="form-group" style="width: 400px;position: relative; left: 20px;">
 		    <label for="activity">市场活动源&nbsp;&nbsp;<a href="javascript:void(0);" id="openSearchModalBtn" style="text-decoration: none;"><span class="glyphicon glyphicon-search"></span></a></label>
-		    <input type="text" class="form-control" id="activity" placeholder="点击上面搜索" readonly>
+		    <input type="text" class="form-control" id="activityName" placeholder="点击上面搜索" readonly>
+              <input type="hidden" id="activityId"/>
 		  </div>
 		</form>
 		
@@ -173,7 +193,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		<b>${param.owner}</b>
 	</div>
 	<div id="operation" style="position: relative; left: 40px; height: 35px; top: 100px;">
-		<input class="btn btn-primary" type="button" value="转换">
+		<input class="btn btn-primary" type="button" value="转换" id="convertBtn">
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<input class="btn btn-default" type="button" value="取消">
 	</div>

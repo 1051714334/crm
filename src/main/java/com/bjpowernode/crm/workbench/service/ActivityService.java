@@ -1,6 +1,5 @@
 package com.bjpowernode.crm.workbench.service;
 
-import com.bjpowernode.crm.settings.domain.User;
 import com.bjpowernode.crm.vo.PaginationVo;
 import com.bjpowernode.crm.workbench.domain.Activity;
 import com.bjpowernode.crm.workbench.domain.ActivityRemark;
@@ -33,4 +32,6 @@ public interface ActivityService {
     List<Activity> getActivityListByClueId(String clueId);
 
     List<Activity> getActivityListByNameAndNotByClueId(Map<String, String> map);
+
+    List<Activity> getActivityListByName(String aname);
 }
