@@ -74,9 +74,9 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
         });
         $("#convertBtn").click(function () {
             if($("#isCreateTransaction").prop("checked")){
-                window.location.href="workbench/clue/convert.do";
+               $("#tranForm").submit();
             }else{
-                window.location.href="workbench/clue/convert.do?clueId=";
+                window.location.href="workbench/clue/convert.do?clueId=${param.id}";
             }
 
         });
@@ -157,22 +157,25 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	</div>
 	<div id="create-transaction2" style="position: relative; left: 40px; top: 20px; width: 80%; background-color: #F7F7F7; display: none;" >
 	
-		<form>
-		  <div class="form-group" style="width: 400px; position: relative; left: 20px;">
+		<form id="tranForm" action="workbench/clue/convert.do" method="post">
+		    <input type="hidden" name="flag" value="a"/>
+
+            <input type="hidden" name="clueId" value="${param.id}"/>
+            <div class="form-group" style="width: 400px; position: relative; left: 20px;">
 		    <label for="amountOfMoney">金额</label>
-		    <input type="text" class="form-control" id="amountOfMoney">
+		    <input type="text" class="form-control" name="money" id="amountOfMoney">
 		  </div>
 		  <div class="form-group" style="width: 400px;position: relative; left: 20px;">
 		    <label for="tradeName">交易名称</label>
-		    <input type="text" class="form-control" id="tradeName" value="动力节点-">
+		    <input type="text" class="form-control" id="tradeName" name="name">
 		  </div>
 		  <div class="form-group" style="width: 400px;position: relative; left: 20px;">
 		    <label for="expectedClosingDate">预计成交日期</label>
-		    <input type="text" class="form-control time" id="expectedClosingDate">
+		    <input type="text" class="form-control time" name="expectedDate" id="expectedClosingDate">
 		  </div>
 		  <div class="form-group" style="width: 400px;position: relative; left: 20px;">
 		    <label for="stage">阶段</label>
-		    <select id="stage"  class="form-control">
+		    <select id="stage"  class="form-control" name="stage">
 		    	<option></option>
 		        <c:forEach items="${stageList}" var="s">
                     <option value="${s.value}">${s.text}</option>
@@ -182,7 +185,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		  <div class="form-group" style="width: 400px;position: relative; left: 20px;">
 		    <label for="activity">市场活动源&nbsp;&nbsp;<a href="javascript:void(0);" id="openSearchModalBtn" style="text-decoration: none;"><span class="glyphicon glyphicon-search"></span></a></label>
 		    <input type="text" class="form-control" id="activityName" placeholder="点击上面搜索" readonly>
-              <input type="hidden" id="activityId"/>
+              <input type="hidden" id="activityId" name="activityId"/>
 		  </div>
 		</form>
 		

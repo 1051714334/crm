@@ -12,6 +12,7 @@ import com.bjpowernode.crm.workbench.dao.ActivityDao;
 import com.bjpowernode.crm.workbench.domain.Activity;
 import com.bjpowernode.crm.workbench.domain.ActivityRemark;
 import com.bjpowernode.crm.workbench.domain.Clue;
+import com.bjpowernode.crm.workbench.domain.Tran;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 import com.bjpowernode.crm.workbench.service.ClueService;
 import com.bjpowernode.crm.workbench.service.impl.ActivityServiceImpl;
@@ -51,7 +52,35 @@ public class ClueController extends HttpServlet {
         }
     }
 
-    private void convert(HttpServletRequest request, HttpServletResponse response) {
+    private void convert(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        String clueId=request.getParameter("clueId");
+        String flag=request.getParameter("flag");
+        String createBy=((User)request.getSession().getAttribute("user")).getName();
+        Tran t=null;
+        if("a".equals(flag)){
+            t=new Tran();
+            String money=request.getParameter("money");
+            String name=request.getParameter("name");
+            String expectedDate=request.getParameter("expectedDate");
+            String stage=request.getParameter("stage");
+            String activityId=request.getParameter("activityId");
+            String id=UUIDUtil.getUUID();
+            String createTime=DateTimeUtil.getSysTime();
+
+            t.setId(id);
+            t.setName(name);
+            t.setMoney(money);
+            t.setStage(stage);
+            t.setExpectedDate(expectedDate);
+            t.setActivityId(activityId);
+            t.setCreateBy(createBy);
+            t.setCreateTime(createTime);
+        }
+        ClueService cs= (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+        boolean flag1=cs.convert(clueId,t,createBy);
+        if(flag1){
+            response.sendRedirect(request.getContextPath()+"/workbench/clue/index.jsp");
+        }
 
     }
 
