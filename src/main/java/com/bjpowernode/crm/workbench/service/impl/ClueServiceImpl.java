@@ -109,6 +109,82 @@ public class ClueServiceImpl implements ClueService {
         List<ClueRemark> clueRemarkList=clueRemarkDao.getListByClueId(clueId);
         for(ClueRemark clueRemark:clueRemarkList){
            String noteContent=clueRemark.getNoteContent();
+           CustomerRemark customerRemark=new CustomerRemark();
+           customerRemark.setId(UUIDUtil.getUUID());
+            customerRemark.setCreateBy(createBy);
+            customerRemark.setCreateTime(createTime);
+            customerRemark.setCustomerId(cus.getId());
+            customerRemark.setEditFlag("0");
+            customerRemark.setNoteContent(noteContent);
+            int count3=customerRemarkDao.save(customerRemark);
+            if(count3!=1){
+                flag=false;
+            }
+
+            ContactsRemark contactsRemark=new ContactsRemark();
+            contactsRemark.setId(UUIDUtil.getUUID());
+            contactsRemark.setCreateBy(createBy);
+            contactsRemark.setCreateTime(createTime);
+            contactsRemark.setContactsId(con.getId());
+            contactsRemark.setEditFlag("0");
+            contactsRemark.setNoteContent(noteContent);
+            int count4=contactsRemarkDao.save(contactsRemark);
+            if(count3!=1){
+                flag=false;
+            }
+        }
+        List<ClueActivityRelation> clueActivityRelationList=clueActivityRelationDao.getListByClueId(clueId);
+        for(ClueActivityRelation clueActivityRelation:clueActivityRelationList){
+            String activityId=clueActivityRelation.getActivityId();
+            ContactsActivityRelation contactsActivityRelation =new ContactsActivityRelation();
+            contactsActivityRelation.setId(UUIDUtil.getUUID());
+            contactsActivityRelation.setActivityId(activityId);
+            contactsActivityRelation.setContactsId(con.getId());
+            int count5=contactsActivityRelationDao.save(contactsActivityRelation);
+            if(count5!=1){
+                flag=false;
+            }
+        }
+        if(t!=null){
+            t.setSource(c.getSource());
+            t.setOwner(c.getOwner());
+            t.setNextContactTime(c.getNextContactTime());
+            t.setDescription(c.getDescription());
+            t.setCustomerId(cus.getId());
+            t.setContactSummary(c.getContactSummary());
+            t.setContactsId(con.getId());
+            int count6=tranDao.save(t);
+            if(count6!=1){
+                flag=false;
+            }
+            TranHistory th=new TranHistory();
+            th.setId(UUIDUtil.getUUID());
+            th.setCreateBy(createBy);
+            th.setCreateTime(createTime);
+            th.setExpectedDate(t.getExpectedDate());
+            th.setMoney(t.getMoney());
+            th.setStage(t.getStage());
+            th.setTranId(t.getId());
+            int count7=tranHistoryDao.save(th);
+            if(count7!=1){
+                flag=false;
+            }
+        }
+       for(ClueRemark clueRemark:clueRemarkList){
+            int count8=clueRemarkDao.delete(clueRemark);
+            if(count8!=1){
+                flag=false;
+            }
+        }
+       for(ClueActivityRelation clueActivityRelation:clueActivityRelationList){
+            int count9=clueActivityRelationDao.delete(clueActivityRelation);
+            if(count9!=1){
+                flag=false;
+            }
+        }
+        int count10=clueDao.delete(clueId);
+        if(count10!=1){
+            flag=false;
         }
         return flag;
 
