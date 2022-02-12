@@ -27,7 +27,8 @@ public class SysInitListener implements ServletContextListener {
         while (e.hasMoreElements()){
             String key=e.nextElement();
             String value=bundle.getString(key);
-
+            pMap.put(key,value);
         }
+        application.setAttribute("pMap",pMap);
     }
 }

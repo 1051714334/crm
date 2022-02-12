@@ -36,7 +36,47 @@ public class TranController extends HttpServlet {
            add(request, response);
         } else if ("/workbench/transaction/getCustomerName.do".equals(path)) {
             getCustomerName(request, response);
+        }else if("/workbench/transaction/save.do".equals(path)){
+            save(request,response);
         }
+    }
+
+    private void save(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+        TranService ts= (TranService) ServiceFactory.getService(new TranServiceImpl());
+        String id=UUIDUtil.getUUID();
+        String owner=request.getParameter("owner");
+        String money=request.getParameter("money");
+        String name=request.getParameter("name");
+        String expectedDate=request.getParameter("expectedDate");
+        String customerName=request.getParameter("customerName");
+        String stage=request.getParameter("stage");
+        String type=request.getParameter("type");
+        String source=request.getParameter("source");
+        String activityId=request.getParameter("activityId");
+        String contactsId=request.getParameter("contactsId");
+        String createBy=((User)request.getSession().getAttribute("user")).getName();
+        String createTime=DateTimeUtil.getSysTime();
+        String description=request.getParameter("description");
+        String contactSummary=request.getParameter("contactSummary");
+        String nextContactTime=request.getParameter("nextContactTime");
+        Tran t=new Tran();
+        t.setContactsId(contactsId);
+        t.setId(id);
+        t.setContactSummary(contactSummary);
+        t.setNextContactTime(nextContactTime);
+        t.setDescription(description);
+        t.setCreateTime(createTime);
+        t.setCreateBy(createBy);
+        t.setActivityId(activityId);
+        t.setSource(source);
+        t.setType(type);
+        t.setStage(stage);
+        t.setExpectedDate(expectedDate);
+        t.setName(name);
+        t.setOwner(owner);
+        t.setMoney(money);
+        boolean flag=ts.save(t,customerName);
+        response.sendRedirect(request.getContextPath()+"/workbench/transaction/index.jsp");
     }
 
     private void getCustomerName(HttpServletRequest request, HttpServletResponse response) {
