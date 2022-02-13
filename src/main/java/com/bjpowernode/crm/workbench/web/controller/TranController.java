@@ -76,7 +76,10 @@ public class TranController extends HttpServlet {
         t.setOwner(owner);
         t.setMoney(money);
         boolean flag=ts.save(t,customerName);
-        response.sendRedirect(request.getContextPath()+"/workbench/transaction/index.jsp");
+        if(flag){
+            response.sendRedirect(request.getContextPath()+"/workbench/transaction/index.jsp");
+        }
+
     }
 
     private void getCustomerName(HttpServletRequest request, HttpServletResponse response) {
