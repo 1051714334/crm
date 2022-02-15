@@ -10,7 +10,6 @@ import com.bjpowernode.crm.workbench.domain.Customer;
 import com.bjpowernode.crm.workbench.domain.Tran;
 import com.bjpowernode.crm.workbench.domain.TranHistory;
 import com.bjpowernode.crm.workbench.service.TranService;
-import sun.misc.UUDecoder;
 
 
 public class TranServiceImpl implements TranService {
@@ -49,8 +48,13 @@ public class TranServiceImpl implements TranService {
         tranHistory.setCreateBy(t.getCreateBy());
         int count3=tranHistoryDao.save(tranHistory);
         if(count3!=1){
-
+            flag=false;
         }
         return flag;
+    }
+
+    public Tran detail(String id) {
+        Tran t=tranDao.detail(id);
+        return t;
     }
 }

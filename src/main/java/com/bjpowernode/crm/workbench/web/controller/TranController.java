@@ -38,7 +38,20 @@ public class TranController extends HttpServlet {
             getCustomerName(request, response);
         }else if("/workbench/transaction/save.do".equals(path)){
             save(request,response);
+        }else if("/workbench/transaction/detail.do".equals(path)){
+            detail(request,response);
         }
+    }
+
+    private void detail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+        String id=request.getParameter("id");
+        TranService ts= (TranService) ServiceFactory.getService(new TranServiceImpl());
+        Tran t=ts.detail(id);
+        Map<String,String> pMap=(Map<String,String>)request.getServletContext().getAttribute("pMap");
+        String possibility=pMap.get(t.getStage());
+        t.setPossibility(possibility);
+        request.setAttribute("t",t);
+        request.getRequestDispatcher("/workbench/transaction/detail.jsp").forward(request,response);
     }
 
     private void save(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
