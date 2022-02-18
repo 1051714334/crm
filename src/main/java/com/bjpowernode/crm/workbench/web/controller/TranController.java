@@ -7,15 +7,10 @@ import com.bjpowernode.crm.utils.DateTimeUtil;
 import com.bjpowernode.crm.utils.PrintJson;
 import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
-import com.bjpowernode.crm.workbench.domain.Activity;
-import com.bjpowernode.crm.workbench.domain.Clue;
 import com.bjpowernode.crm.workbench.domain.Tran;
-import com.bjpowernode.crm.workbench.service.ActivityService;
-import com.bjpowernode.crm.workbench.service.ClueService;
+import com.bjpowernode.crm.workbench.domain.TranHistory;
 import com.bjpowernode.crm.workbench.service.CustomerService;
 import com.bjpowernode.crm.workbench.service.TranService;
-import com.bjpowernode.crm.workbench.service.impl.ActivityServiceImpl;
-import com.bjpowernode.crm.workbench.service.impl.ClueServiceImpl;
 import com.bjpowernode.crm.workbench.service.impl.CustomerServiceImpl;
 import com.bjpowernode.crm.workbench.service.impl.TranServiceImpl;
 
@@ -24,7 +19,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +34,21 @@ public class TranController extends HttpServlet {
             save(request,response);
         }else if("/workbench/transaction/detail.do".equals(path)){
             detail(request,response);
+        }else if("/workbench/transaction/getHistoryListByTranId.do".equals(path)){
+            getHistoryListByTranId(request,response);
         }
+    }
+
+    private void getHistoryListByTranId(HttpServletRequest request, HttpServletResponse response) {
+        String tranId=request.getParameter("tranId");
+        TranService ts= (TranService) ServiceFactory.getService(new TranServiceImpl());
+        List<TranHistory> thList=ts.getHistoryListByTranId(tranId);
+        Map<String,String> pMap=(Map<String,String>)request.getServletContext().getAttribute("pMap");
+        for(TranHistory th:thList){
+            th.setPossibility(pMap.get(th.getStage()));
+        }
+
+        PrintJson.printJsonObj(response,thList);
     }
 
     private void detail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{

@@ -1,6 +1,25 @@
+<%@ page import="com.bjpowernode.crm.settings.domain.DicValue" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.Set" %>
+<%@ page import="com.bjpowernode.crm.workbench.domain.Tran" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
 String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 	request.getServerPort() + request.getContextPath() + "/";
+List<DicValue> dvList=(List<DicValue>)application.getAttribute("stageList");
+
+Map<String,String> pMap=(Map<String,String>)application.getAttribute("pMap");
+Set<String> key=pMap.keySet();
+int point=0;
+for(int i=0;i<dvList.size();i++){
+	DicValue dv=dvList.get(i);
+	String stage=dv.getValue();
+	String possibility=pMap.get(stage);
+	if("0".equals(possibility)){
+		point=i;
+		break;
+	}
+	}
 %>
 <!DOCTYPE html>
 <html>
@@ -89,6 +108,9 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                 });
 		showHistoryList();
 	});
+	function changeStage(stage,i) {
+
+	}
 	function showHistoryList() {
 		$.ajax({
 			url:"workbench/transaction/getHistoryListByTranId.do",
@@ -114,8 +136,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 		});
 	}
-	
-	
 </script>
 
 </head>
@@ -140,7 +160,123 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	<!-- 阶段状态 -->
 	<div style="position: relative; left: 40px; top: -50px;">
 		阶段&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
+		<%
+		//准备当前阶段
+			Tran t=(Tran)request.getAttribute("t");
+			String currentStage=t.getStage();
+			//准备档期阶段可能性
+			String currentPossibility=pMap.get(currentStage);
+			if("0".equals(currentPossibility)){
+				for(int i=0;i<dvList.size();i++){
+					DicValue dv=dvList.get(i);
+					String listStage=dv.getValue();
+					String listPossibility=pMap.get(listStage);
+					if("0".equals(listPossibility)){
+						if(listStage.equals(currentStage)){
+							//红插
+							%>
+		<span id="<%=i%>" onclick="changeStage('<%=listStage%>','<%=i%>')"
+			  class="glyphicon glyphicon-remove mystage"
+			  data-toggle="popover"
+			  data-placement="bottom"
+			  data-content="<%=dv.getText()%>"
+			  style="color: #FF0000;"></span>
+		-----------
+							<%
+						}else{
+							//黑插
+							%>
+		<span id="<%=i%>" onclick="changeStage('<%=listStage%>','<%=i%>')"
+			  class="glyphicon glyphicon-remove mystage"
+			  data-toggle="popover"
+			  data-placement="bottom"
+			  data-content="<%=dv.getText()%>"
+			  style="color: #000000;"></span>
+		-----------
+		<%
+						}
+					}else {
+						//黑圈
+		%>
+		<span id="<%=i%>" onclick="changeStage('<%=listStage%>','<%=i%>')"
+			  class="glyphicon glyphicon-record mystage"
+			  data-toggle="popover"
+			  data-placement="bottom"
+			  data-content="<%=dv.getText()%>"
+			  style="color: #000000;"></span>
+		-----------
+		<%
+					}
+				}
+				//前7个位黑圈
+			}else{
+				//准备档期阶段的下标
+				int index=0;
+				for(int i=0;i<dvList.size();i++){
+					DicValue dv=dvList.get(i);
+					String stage=dv.getValue();
+					if(stage.equals(currentStage)){
+						index=i;
+						break;
+					}
+				}
+				for(int i=0;i<dvList.size();i++){
+					DicValue dv=dvList.get(i);
+					String listStage=dv.getValue();
+					String listPossibility=pMap.get(listStage);
+					if("0".equals(listPossibility)){
+						//黑插
+		%>
+		<span id="<%=i%>" onclick="changeStage('<%=listStage%>','<%=i%>')"
+			  class="glyphicon glyphicon-remove mystage"
+			  data-toggle="popover"
+			  data-placement="bottom"
+			  data-content="<%=dv.getText()%>"
+			  style="color: #000000;"></span>
+		-----------
+		<%
+					}else {
+						if(i==index){
+							//绿点
+		%>
+		<span id="<%=i%>" onclick="changeStage('<%=listStage%>','<%=i%>')"
+			  class="glyphicon glyphicon-map-marker mystage"
+			  data-toggle="popover"
+			  data-placement="bottom"
+			  data-content="<%=dv.getText()%>"
+			  style="color: #90F790;"></span>
+		-----------
+		<%
+						}
+						else if(i<index){
+							//绿圈
+		%>
+		<span id="<%=i%>" onclick="changeStage('<%=listStage%>','<%=i%>')"
+			  class="glyphicon glyphicon-ok-circle mystage"
+			  data-toggle="popover"
+			  data-placement="bottom"
+			  data-content="<%=dv.getText()%>"
+			  style="color: #90F790;"></span>
+		-----------
+		<%
+						}else{
+							//黑圈
+		%>
+		<span id="<%=i%>" onclick="changeStage('<%=listStage%>','<%=i%>')"
+			  class="glyphicon glyphicon-record mystage"
+			  data-toggle="popover"
+			  data-placement="bottom"
+			  data-content="<%=dv.getText()%>"
+			  style="color: #000000;"></span>
+		-----------
+		<%
+						}
+
+					}
+				}
+			}
+		%>
+		<%--<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
 		-----------
 		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="需求分析" style="color: #90F790;"></span>
 		-----------
@@ -157,7 +293,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="丢失的线索"></span>
 		-----------
 		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="因竞争丢失关闭"></span>
-		-----------
+		-------------%>
 		<span class="closingDate">${t.expectedDate}</span>
 	</div>
 	
