@@ -109,7 +109,29 @@ for(int i=0;i<dvList.size();i++){
 		showHistoryList();
 	});
 	function changeStage(stage,i) {
+        $.ajax({
+            url:"workbench/transaction/changeStage.do",
+            data:{
+                "id":"${t.id}",
+                "stage":stage,
+                "money":"${t.money}",
+                "expectedDate":"${t.expectedDate}"
+            },
+            type:"post",
+            dataType:"json",
+            success:function (data) {
+                if(data.success){
+                    $("#stage").html(data.t.stage);
+                    $("#possibility").html(data.t.possibility);
+                    $("#editBy").html(data.t.editBy);
+                    $("#editTime").html(data.t.editTime);
 
+                    changeIcon(stage,i);
+                }else{
+                    alert("变更阶段失败");
+                }
+            }
+        });
 	}
 	function showHistoryList() {
 		$.ajax({
@@ -135,6 +157,59 @@ for(int i=0;i<dvList.size();i++){
 			}
 
 		});
+	}
+   function changeIcon(stage,index1){
+	    var currentStage=stage;
+	    var currentPossibility=$("#possibility").html();
+        var index=index1;
+        var point="<%=point%>";
+        if(currentPossibility=="0"){
+            for(i=0;i<point;i++){
+                //黑圈
+                $("#"+i).removeClass();
+                $("#"+i).addClass("glyphicon glyphicon-record mystage");
+                $("#"+i).css("color","#000000");
+            }
+            for(i=point;i<<%=dvList.size()%>;i++){
+                if(i==index){
+                    //红叉
+                    $("#"+i).removeClass();
+                    $("#"+i).addClass("glyphicon glyphicon-remove mystage");
+                    $("#"+i).css("color","#EE0000");
+                }else{
+                    //黑叉
+                    $("#"+i).removeClass();
+                    $("#"+i).addClass("glyphicon glyphicon-remove mystage");
+                    $("#"+i).css("color","#000000");
+                }
+            }
+        }else {
+            for(i=0;i<point;i++){
+                if(i==index){
+                    //绿点
+                    $("#"+i).removeClass();
+                    $("#"+i).addClass("glyphicon glyphicon-map-marker mystage");
+                    $("#"+i).css("color","#90F790");
+                }else if(i<index){
+                    //绿圈
+                    $("#"+i).removeClass();
+                    $("#"+i).addClass("glyphicon glyphicon-record mystage");
+                    $("#"+i).css("color","#90F790");
+                }else{
+                    //黑圈
+                    $("#"+i).removeClass();
+                    $("#"+i).addClass("glyphicon glyphicon-record mystage");
+                    $("#"+i).css("color","#000000");
+                }
+
+            }
+            for(i=point;i<<%=dvList.size()%>;i++){
+                    //黑叉
+                $("#"+i).removeClass();
+                $("#"+i).addClass("glyphicon glyphicon-remove mystage");
+                $("#"+i).css("color","#000000");
+            }
+        }
 	}
 </script>
 
@@ -319,7 +394,7 @@ for(int i=0;i<dvList.size();i++){
 			<div style="width: 300px; color: gray;">客户名称</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${t.customerId}</b></div>
 			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">阶段</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${t.stage}</b></div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b id="stage">${t.stage}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
@@ -327,7 +402,7 @@ for(int i=0;i<dvList.size();i++){
 			<div style="width: 300px; color: gray;">类型</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${t.type}</b></div>
 			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">可能性</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${t.possibility}</b></div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b id="possibility">${t.possibility}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
@@ -351,7 +426,7 @@ for(int i=0;i<dvList.size();i++){
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 70px;">
 			<div style="width: 300px; color: gray;">修改者</div>
-			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${t.editBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${t.editTime}</small></div>
+			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b id="editBy">${t.editBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;" id="editTime">${t.editTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 80px;">
