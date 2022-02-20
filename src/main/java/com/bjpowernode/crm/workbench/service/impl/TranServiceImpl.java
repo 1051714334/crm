@@ -11,7 +11,9 @@ import com.bjpowernode.crm.workbench.domain.Tran;
 import com.bjpowernode.crm.workbench.domain.TranHistory;
 import com.bjpowernode.crm.workbench.service.TranService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class TranServiceImpl implements TranService {
@@ -83,6 +85,15 @@ public class TranServiceImpl implements TranService {
             flag=false;
         }
         return flag;
+    }
+
+    public Map<String, Object> getCharts() {
+        int total =tranDao.getTotal();
+        List<Map<String,Object>> tranList=tranDao.getCharts();
+        Map<String,Object> map=new HashMap<String, Object>();
+        map.put("total",total);
+        map.put("dataList",tranList);
+        return map;
     }
 
 
