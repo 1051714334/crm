@@ -15,7 +15,76 @@ public class Customer {
 	private String nextContactTime;
 	private String description;
 	private String address;
-	
+	private String banquetDate;
+	private String banquetVenue;
+	private String nature;
+	private String childrenName;
+	private String childrenPhone;
+	private String nPeopleName;
+	private String nPeoplePhone;
+	private String childrenAddress;
+	public String getChildrenPhone() {
+		return childrenPhone;
+	}
+
+	public void setChildrenPhone(String childrenPhone) {
+		this.childrenPhone = childrenPhone;
+	}
+	public String getBanquetDate() {
+		return banquetDate;
+	}
+
+	public void setBanquetDate(String banquetDate) {
+		this.banquetDate = banquetDate;
+	}
+
+	public String getBanquetVenue() {
+		return banquetVenue;
+	}
+
+	public void setBanquetVenue(String banquetVenue) {
+		this.banquetVenue = banquetVenue;
+	}
+
+	public String getNature() {
+		return nature;
+	}
+
+	public void setNature(String nature) {
+		this.nature = nature;
+	}
+	public String getChildrenName() {
+		return childrenName;
+	}
+
+	public void setChildrenName(String childrenName) {
+		this.childrenName = childrenName;
+	}
+
+	public String getnPeopleName() {
+		return nPeopleName;
+	}
+
+	public void setnPeopleName(String nPeopleName) {
+		this.nPeopleName = nPeopleName;
+	}
+
+	public String getnPeoplePhone() {
+		return nPeoplePhone;
+	}
+
+	public void setnPeoplePhone(String nPeoplePhone) {
+		this.nPeoplePhone = nPeoplePhone;
+	}
+
+	public String getChildrenAddress() {
+		return childrenAddress;
+	}
+
+	public void setChildrenAddress(String childrenAddress) {
+		this.childrenAddress = childrenAddress;
+	}
+
 	public String getId() {
 		return id;
 	}

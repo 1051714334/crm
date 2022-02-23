@@ -11,4 +11,7 @@ public interface CustomerDao {
     int save(Customer cus);
 
     List<String> getCustomerName(String name);
+
+    Customer getCustomerByPhone(String phone);
+
 }
