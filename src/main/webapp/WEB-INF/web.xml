@@ -84,6 +84,16 @@
         <url-pattern>/workbench/transaction/changeStage.do</url-pattern>
         <url-pattern>/workbench/transaction/getCharts.do</url-pattern>
     </servlet-mapping>
+    <!--客户模块-->
+    <servlet>
+        <servlet-name>CustomerController</servlet-name>
+        <servlet-class>com.bjpowernode.crm.workbench.web.controller.CustomerController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CustomerController</servlet-name>
+        <url-pattern>/workbench/customer/getUserList.do</url-pattern>
+        <url-pattern>/workbench/customer/save.do</url-pattern>
+    </servlet-mapping>
     <!--
     add/create:跳转到添加操作，或者打开添加操作模态窗口
     cave:执行添加操作
