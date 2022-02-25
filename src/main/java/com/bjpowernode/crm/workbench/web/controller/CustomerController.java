@@ -36,7 +36,17 @@ public class CustomerController extends HttpServlet {
             getUserListAndCustomer(request,response);
         }else if("/workbench/customer/update.do".equals(path)){
             update(request,response);
+        }else if("/workbench/customer/detail.do".equals(path)){
+            detail(request,response);
         }
+    }
+
+    private void detail(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException  {
+   CustomerService cs= (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
+   String id=request.getParameter("id");
+   Customer cus=cs.detail(id);
+   request.setAttribute("cus",cus);
+   request.getRequestDispatcher("/workbench/customer/detail.jsp").forward(request,response);
     }
 
     private void update(HttpServletRequest request, HttpServletResponse response) {
@@ -50,7 +60,11 @@ public class CustomerController extends HttpServlet {
                 String contactSummary=request.getParameter("contactSummary");
                 String nextContactTime=request.getParameter("nextContactTime");
                 String address=request.getParameter("address");
+                String editBy=((User)request.getSession().getAttribute("user")).getName();
+                String editDate=DateTimeUtil.getSysTime();
                 Customer cus=new Customer();
+                cus.setEditBy(editBy);
+                cus.setEditTime(editDate);
                 cus.setId(id);
                 cus.setOwner(owner);
                 cus.setName(name);
@@ -139,7 +153,8 @@ public class CustomerController extends HttpServlet {
         cus.setnPeoplePhone(nPeoplePhone);
         cus.setOwner(owner);
         cus.setId(id);
-
+        cus.setCreateBy(createBy);
+        cus.setCreateTime(createTime);
         Tran t=new Tran();
         t.setId(UUIDUtil.getUUID());
         t.setOwner(owner);

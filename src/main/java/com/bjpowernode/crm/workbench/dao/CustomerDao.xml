@@ -5,19 +5,34 @@
 
 <mapper namespace="com.bjpowernode.crm.workbench.dao.CustomerDao">
     <update id="update" >
-        update set
+        update tbl_customer set
+        owner=#{owner},
+        name=#{name},
+        website=#{website},
+        phone=#{phone},
+        description=#{description},
+        contactSummary=#{contactSummary},
+        nextContactTime=#{nextContactTime},
+        address=#{address},
+        editBy=#{editBy},
+        editTime=#{editTime}
+        where id=#{id}
     </update>
     <select id="getById" resultType="customer">
       select
           cus.id,
-          u.id as owner,
+          u.name as owner,
           cus.name,
           cus.website,
           cus.phone,
           cus.description,
           cus.contactSummary,
           cus.nextContactTime,
-          cus.address
+          cus.address,
+          cus.createBy,
+          cus.createTime,
+          cus.editBy,
+          cus.editTime
         from tbl_customer cus join tbl_user u on cus.owner=u.id
      where cus.id=#{id}
     </select>

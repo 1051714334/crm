@@ -96,5 +96,10 @@ public class CustomerServiceImpl implements CustomerService {
         return flag;
     }
 
+    public Customer detail(String id) {
+
+        return customerDao.getById(id);
+    }
+
 
 }

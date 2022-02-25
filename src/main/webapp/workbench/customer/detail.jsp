@@ -18,6 +18,64 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	var cancelAndSaveBtnDefault = true;
 	
 	$(function(){
+
+		$("#editBtn").click(function () {
+				$.ajax({
+					url:"workbench/customer/getUserListAndCustomer.do",
+					data:{
+						"id":"${cus.id}"
+					},
+					type:"get",
+					dataType:"json",
+					success:function (data) {
+						var html='<option></option>';
+						$.each(data.userList,function (i,n) {
+							html+='<option value="'+n.id+'">'+n.name+'</option>';
+						});
+						$("#edit-owner").html(html);
+						$("#edit-owner").val("${user.id}");
+						$("#edit-name").val(data.cus.name);
+						$("#edit-website").val(data.cus.website);
+						$("#edit-phone").val(data.cus.phone);
+						$("#edit-description").val(data.cus.description);
+						$("#edit-contactSummary1").val(data.cus.contactSummary);
+						$("#edit-nextContactTime1").val(data.cus.nextContactTime);
+						$("#edit-address").val(data.cus.address);
+						$("#editCustomerModal").modal("show");
+
+					}
+				});
+		});
+		$("#updateBtn").click(function () {
+			$.ajax({
+				url:"workbench/customer/update.do",
+				data:{
+					"id":"${cus.id}",
+					"owner":$.trim($("#edit-owner").val()),
+					"name":$.trim($("#edit-name").val()),
+					"website":$.trim($("#edit-website").val()),
+					"phone":$.trim($("#edit-phone").val()),
+					"description":$.trim($("#edit-description").val()),
+					"contactSummary":$.trim($("#edit-contactSummary1").val()),
+					"nextContactTime":$.trim($("#edit-nextContactTime1").val()),
+					"address":$.trim($("#edit-address").val())
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data) {
+					if(data.success){
+						$("#editCustomerModal").modal("hide");
+						$("#updateModal")[0].reset();
+					}else{
+						alert("更新失败");
+						$("#editCustomerModal").modal("hide");
+					}
+				}
+			});
+		});
+		$("#deleteBtn").click(function () {
+			alert("客户信息不可删除！");
+		});
 		$("#remark").focus(function(){
 			if(cancelAndSaveBtnDefault){
 				//设置remarkDiv的高度为130px
@@ -51,8 +109,38 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		$(".myHref").mouseout(function(){
 			$(this).children("span").css("color","#E6E6E6");
 		});
+		showRemarkList();
+
 	});
-	
+	/*function showRemarkList() {
+			$.ajax({
+				url:"workbench/customer/showRemarkList.do",
+				data:{
+					"customerId":"\${cus.id}"
+				},
+				type:"get",
+				dataType:"json",
+				success:function (data) {
+					var html="";
+					$.each(data,function (i,n) {
+						html += '<div id="'+n.id+'" class="remarkDiv" style="height: 60px;">';
+						html += '<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">';
+						html += '<div style="position: relative; top: -40px; left: 40px;" >';
+						html += '<h5 id="n'+n.id+'">'+n.noteContent+'</h5>';
+						html += '<font color="gray">市场活动</font> <font col or="gray">-</font> <b>\${a.name}</b> <small style="color: gray;" id="s'+n.id+'"> '+(n.editFlag==0?n.createTime:n.editTime)+' 由'+(n.editFlag==0?n.createBy:n.editBy)+'</small>';
+						html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">';
+						html += '<a class="myHref" href="javascript:void(0);" onclick="editRemark(\''+n.id+'\')" ><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #FF0000;"></span></a>';
+						html += '&nbsp;&nbsp;&nbsp;&nbsp;';
+						html += '<a class="myHref" onclick="deleteRemark(\''+n.id+'\')" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #FF0000;"></span></a>';
+						html += '</div>';
+						html += '</div>';
+						html += '</div>';
+					});
+					$("#remarkDiv").before(html);
+				}
+			});
+
+		}*/
 </script>
 
 </head>
@@ -253,24 +341,22 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                         <div class="form-group">
                             <label for="edit-customerOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <select class="form-control" id="edit-customerOwner">
-                                    <option>zhangsan</option>
-                                    <option>lisi</option>
-                                    <option>wangwu</option>
+                                <select class="form-control" id="edit-owner">
+
                                 </select>
                             </div>
                             <label for="edit-customerName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-customerName" value="动力节点">
+                                <input type="text" class="form-control" id="edit-name" value="动力节点">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="edit-website" class="col-sm-2 control-label">公司网站</label>
+                            <label for="edit-website" class="col-sm-2 control-label">个人邮箱</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="edit-website" value="http://www.bjpowernode.com">
                             </div>
-                            <label for="edit-phone" class="col-sm-2 control-label">公司座机</label>
+                            <label for="edit-phone" class="col-sm-2 control-label">电话号码</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="edit-phone" value="010-84846003">
                             </div>
@@ -279,7 +365,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                         <div class="form-group">
                             <label for="edit-describe" class="col-sm-2 control-label">描述</label>
                             <div class="col-sm-10" style="width: 81%;">
-                                <textarea class="form-control" rows="3" id="edit-describe"></textarea>
+                                <textarea class="form-control" rows="3" id="edit-description"></textarea>
                             </div>
                         </div>
 
@@ -289,13 +375,13 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                             <div class="form-group">
                                 <label for="create-contactSummary1" class="col-sm-2 control-label">联系纪要</label>
                                 <div class="col-sm-10" style="width: 81%;">
-                                    <textarea class="form-control" rows="3" id="create-contactSummary1"></textarea>
+                                    <textarea class="form-control" rows="3" id="edit-contactSummary1"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="create-nextContactTime2" class="col-sm-2 control-label">下次联系时间</label>
                                 <div class="col-sm-10" style="width: 300px;">
-                                    <input type="text" class="form-control" id="create-nextContactTime2">
+                                    <input type="text" class="form-control" id="edit-nextContactTime1">
                                 </div>
                             </div>
                         </div>
@@ -306,7 +392,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                             <div class="form-group">
                                 <label for="edit-address" class="col-sm-2 control-label">详细地址</label>
                                 <div class="col-sm-10" style="width: 81%;">
-                                    <textarea class="form-control" rows="1" id="edit-address">北京大兴大族企业湾</textarea>
+                                    <textarea class="form-control" rows="1" id="edit-address"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -315,7 +401,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+                    <button type="button" class="btn btn-primary" id="updateBtn">更新</button>
                 </div>
             </div>
         </div>
@@ -329,11 +415,11 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	<!-- 大标题 -->
 	<div style="position: relative; left: 40px; top: -30px;">
 		<div class="page-header">
-			<h3>动力节点 <small><a href="http://www.bjpowernode.com" target="_blank">http://www.bjpowernode.com</a></small></h3>
+			<h3>${cus.name} <small><a href="http://www.bjpowernode.com" target="_blank">${cus.website}</a></small></h3>
 		</div>
 		<div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
-			<button type="button" class="btn btn-default" data-toggle="modal" data-target="#editCustomerModal"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
-			<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+			<button type="button" class="btn btn-default" id="editBtn"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
+			<button type="button" class="btn btn-danger" id="deleteBtn" ><span class="glyphicon glyphicon-minus"></span> 删除</button>
 		</div>
 	</div>
 	
@@ -341,49 +427,49 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	<div style="position: relative; top: -70px;">
 		<div style="position: relative; left: 40px; height: 30px;">
 			<div style="width: 300px; color: gray;">所有者</div>
-			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>zhangsan</b></div>
+			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${cus.owner}</b></div>
 			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">名称</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>动力节点</b></div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${cus.name}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 10px;">
-			<div style="width: 300px; color: gray;">公司网站</div>
-			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>http://www.bjpowernode.com</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">公司座机</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>010-84846003</b></div>
+			<div style="width: 300px; color: gray;">个人邮箱</div>
+			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${cus.website}</b></div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">联系电话</div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${cus.phone}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 20px;">
 			<div style="width: 300px; color: gray;">创建者</div>
-			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>zhangsan&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">2017-01-18 10:10:10</small></div>
+			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${cus.createBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${cus.createTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 30px;">
 			<div style="width: 300px; color: gray;">修改者</div>
-			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>zhangsan&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">2017-01-19 10:10:10</small></div>
+			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${cus.editBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${cus.editTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
         <div style="position: relative; left: 40px; height: 30px; top: 40px;">
             <div style="width: 300px; color: gray;">联系纪要</div>
             <div style="width: 630px;position: relative; left: 200px; top: -20px;">
                 <b>
-                    这条线索即将被转换
+                    ${cus.contactSummary}
                 </b>
             </div>
             <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
         </div>
         <div style="position: relative; left: 40px; height: 30px; top: 50px;">
             <div style="width: 300px; color: gray;">下次联系时间</div>
-            <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>2017-05-01</b></div>
+            <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${cus.nextContactTime}</b></div>
             <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -20px; "></div>
         </div>
 		<div style="position: relative; left: 40px; height: 30px; top: 60px;">
 			<div style="width: 300px; color: gray;">描述</div>
 			<div style="width: 630px;position: relative; left: 200px; top: -20px;">
 				<b>
-					这是一条线索的描述信息
+					${cus.description}
 				</b>
 			</div>
 			<div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
@@ -392,7 +478,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
             <div style="width: 300px; color: gray;">详细地址</div>
             <div style="width: 630px;position: relative; left: 200px; top: -20px;">
                 <b>
-                    北京大兴大族企业湾
+                    ${cus.address}
                 </b>
             </div>
             <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
@@ -406,18 +492,18 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		</div>
 		
 		<!-- 备注1 -->
-		<div class="remarkDiv" style="height: 60px;">
+		<%--<div class="remarkDiv" style="height: 60px;">
 			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
 			<div style="position: relative; top: -40px; left: 40px;" >
-				<h5>哎呦！</h5>
-				<font color="gray">联系人</font> <font color="gray">-</font> <b>李四先生-北京动力节点</b> <small style="color: gray;"> 2017-01-22 10:10:10 由zhangsan</small>
-				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
-				</div>
+			<h5>哎呦！</h5>
+			<font color="gray">联系人</font> <font color="gray">-</font> <b>李四先生-北京动力节点</b> <small style="color: gray;"> 2017-01-22 10:10:10 由zhangsan</small>
+			<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
+			<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
 			</div>
-		</div>
+			</div>
+		    </div>
 		
 		<!-- 备注2 -->
 		<div class="remarkDiv" style="height: 60px;">
@@ -431,7 +517,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
 				</div>
 			</div>
-		</div>
+		</div>--%>
 		
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 			<form role="form" style="position: relative;top: 10px; left: 10px;">

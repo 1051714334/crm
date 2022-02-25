@@ -16,4 +16,6 @@ public interface CustomerService {
     Map<String, Object> getUserListAndCustomer(String id);
 
     boolean update(Customer cus);
+
+    Customer detail(String id);
 }

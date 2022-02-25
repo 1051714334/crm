@@ -62,7 +62,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						html+='<option value="'+n.id+'">'+n.name+'</option>';
 					});
 					$("#create-owner").html(html);
-					$("#create-owner").val('${u.id}');
+					$("#create-owner").val('${user.id}');
                     $("#createCustomerModal").modal("show");
 				}
 			});
@@ -96,7 +96,9 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                 success:function (data) {
                     if(data.success){
                         $("#createCustomerModal").modal("hide");
-						pageList(1,2);
+                        $("#createModal")[0].reset();
+						pageList(1,$("#customerPage").bs_pagination('getOption', 'rowsPerPage'));
+
                     }else{
                         alert("添加失败,数据库中已有该数据。请到修改页通过手机号查询并修改该信息！");
                         $("#createCustomerModal").modal("hide");
@@ -111,7 +113,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			$("#hidden-phone").val($.trim($("#search-phone").val()));
 			$("#hidden-startDate").val($.trim($("#search-startDate").val()));
 			$("#hidden-endDate").val($.trim($("#search-endDate").val()));
-			pageList(1,2);
+			pageList(1,$("#customerPage").bs_pagination('getOption', 'rowsPerPage'));
 		});
 		$("#editBtn").click(function () {
 			if($("input[name=xz]:checked").length==0){
@@ -133,7 +135,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						});
 						$("#edit-owner").html(html);
 						$("#hidden-userId").val(data.cus.id);
-						$("#edit-owner").val(data.cus.owner);
+						$("#edit-owner").val("${user.id}");
 						$("#edit-name").val(data.cus.name);
 						$("#edit-website").val(data.cus.website);
 						$("#edit-phone").val(data.cus.phone);
@@ -167,8 +169,10 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				dataType:"json",
 				success:function (data) {
 					if(data.success){
-						pageList(1,2);
 						$("#editCustomerModal").modal("hide");
+						$("#updateModal")[0].reset();
+						pageList($("#customerPage").bs_pagination('getOption', 'currentPage')
+								,$("#customerPage").bs_pagination('getOption', 'rowsPerPage'));
 					}else{
 						alert("更新失败");
 						$("#editCustomerModal").modal("hide");
@@ -176,7 +180,9 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				}
 			});
 		});
-
+		$("#deleteBtn").click(function () {
+			alert("客户信息禁止删除，如有疑问请联系管理员");
+		});
 	});
 	function pageList(pageNo,pageSize) {
 		$("#xp").prop("checked",false);
@@ -203,7 +209,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				$.each(data.dataList,function (i,n) {
 				html+='<tr class="active">';
 				html+='<td><input name="xz" type="checkbox" value="'+n.id+'" /></td>';
-				html+='<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/customer/detail.jsp?id='+n.id+'\';">'+n.name+'</a></td>';
+				html+='<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/customer/detail.do?id='+n.id+'\';">'+n.name+'</a></td>';
 				html+='<td>'+n.owner+'</td>';
 				html+='<td>'+n.phone+'</td>';
 				html+='<td>'+n.banquetDate+'</td>';
@@ -241,6 +247,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	<input type="hidden" id="hidden-phone"/>
 	<input type="hidden" id="hidden-startDate"/>
 	<input type="hidden" id="hidden-endDate"/>
+	<input type="hidden" id="hidden-userId"/>
 	<!-- 创建客户的模态窗口 -->
 	<div class="modal fade" id="createCustomerModal" role="dialog">
 		<div class="modal-dialog" role="document" style="width: 85%;">
@@ -252,7 +259,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					<h4 class="modal-title" id="myModalLabel1">创建客户</h4>
 				</div>
 				<div class="modal-body">
-					<form class="form-horizontal" role="form">
+					<form class="form-horizontal" id="createModal" role="form">
 					
 						<div class="form-group">
 							<label for="create-customerOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
@@ -391,10 +398,10 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					<h4 class="modal-title" id="myModalLabel">修改客户</h4>
 				</div>
 				<div class="modal-body">
-					<form class="form-horizontal" role="form">
+					<form class="form-horizontal" id="updateModal" role="form">
 					
 						<div class="form-group">
-							</input type="hidden" id="hidden-userId">
+
 							<label for="edit-customerOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-owner">
@@ -458,7 +465,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" id="updateBtn">更新</button>
+					<button type="button" class="btn btn-primary" id="updateBtn">更新</button>
 				</div>
 			</div>
 		</div>
@@ -523,7 +530,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				<div class="btn-group" style="position: relative; top: 18%;">
 				  <button type="button" class="btn btn-primary" id="addBut"><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				  <button type="button" class="btn btn-default" id="editBtn"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				
 			</div>
