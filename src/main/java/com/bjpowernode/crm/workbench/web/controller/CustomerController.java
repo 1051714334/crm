@@ -7,13 +7,10 @@ import com.bjpowernode.crm.utils.DateTimeUtil;
 import com.bjpowernode.crm.utils.PrintJson;
 import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
+import com.bjpowernode.crm.vo.PaginationVo;
 import com.bjpowernode.crm.workbench.domain.Customer;
-import com.bjpowernode.crm.workbench.domain.Tran;
-import com.bjpowernode.crm.workbench.domain.TranHistory;
 import com.bjpowernode.crm.workbench.service.CustomerService;
-import com.bjpowernode.crm.workbench.service.TranService;
 import com.bjpowernode.crm.workbench.service.impl.CustomerServiceImpl;
-import com.bjpowernode.crm.workbench.service.impl.TranServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -32,23 +29,50 @@ public class CustomerController extends HttpServlet {
            getUserList(request, response);
         } else if ("/workbench/customer/save.do".equals(path)) {
            save(request, response);
+        }else if("/workbench/customer/pageList.do".equals(path)){
+            pageList(request,response);
         }
+    }
+
+    private void pageList(HttpServletRequest request, HttpServletResponse response) {
+        String name=request.getParameter("name");
+        String owner=request.getParameter("owner");
+        String phone=request.getParameter("phone");
+        String startDate=request.getParameter("startDate");
+        String endDate=request.getParameter("endDate");
+        int pageNo=Integer.valueOf(request.getParameter("pageNo"));
+        int pageSize=Integer.valueOf(request.getParameter("pageSize"));
+        int skipCount=(pageNo-1)*pageSize;
+        Map<String,Object> map=new HashMap<String,Object>();
+        map.put("name",name);
+        map.put("owner",owner);
+        map.put("phone",phone);
+        map.put("startDate",startDate);
+        map.put("endDate",endDate);
+        map.put("skipCount",skipCount);
+        map.put("pageSize",pageSize);
+        CustomerService cs= (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
+        PaginationVo<Customer> vo=cs.pageList(map);
+        PrintJson.printJsonObj(response,vo);
     }
 
     private void save(HttpServletRequest request, HttpServletResponse response) {
         CustomerService cs= (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
-        Customer cus=null;
+
         String phone=request.getParameter("phone");
-       cus=cs.getCustomerByPhone(phone);
-        boolean flag=true;
-        if(cus!=null){
+       // int count=cs.getCustomerByPhone(phone);
+        boolean flag;
+        /*if(count>=1){
             flag=false;
-        }else if(cus==null) {
+            PrintJson.printJsonFlag(response,flag);
+           return;
+        }else{*/
+          Customer cus=new Customer();
             String id=UUIDUtil.getUUID();
             String owner=request.getParameter("owner");
-            String name=request.getParameter("name");
-            String website=request.getParameter("website");
-            String createBy=((User)request.getSession().getAttribute("user")).getName();
+           String name=request.getParameter("name");
+           String website=request.getParameter("website");
+           String createBy=((User)request.getSession().getAttribute("user")).getName();
             String createTime=DateTimeUtil.getSysTime();
             String contactSummary=request.getParameter("contactSummary");
             String nextContactTime=request.getParameter("nextContactTime");
@@ -62,30 +86,28 @@ public class CustomerController extends HttpServlet {
             String nPeoplePhone=request.getParameter("nPeoplePhone");
             String childrenAddress=request.getParameter("childrenAddress");
             String childrenPhone=request.getParameter("childrenPhone");
-        System.out.println(childrenAddress);
-            cus=new Customer();
-            cus.setContactSummary(contactSummary);
-            cus.setWebsite(website);
-            cus.setNextContactTime(nextContactTime);
-            cus.setOwner(owner);
-            cus.setCreateTime(createTime);
-            cus.setName(name);
-            cus.setCreateBy(createBy);
-            cus.setPhone(phone);
-            cus.setId(id);
-            cus.setAddress(address);
-            cus.setDescription(description);
-            cus.setBanquetDate(banquetDate);
-            cus.setBanquetVenue(banquetVenue);
-            cus.setChildrenAddress(childrenAddress);
-            cus.setChildrenName(childrenName);
-            cus.setChildrenPhone(childrenPhone);
-            cus.setNature(nature);
-            cus.setnPeopleName(nPeopleName);
-            cus.setnPeoplePhone(nPeoplePhone);
-           flag=cs.save(cus);
 
-        }
+     cus.setContactSummary(contactSummary);
+        cus.setWebsite(website);
+        cus.setNextContactTime(nextContactTime);
+        cus.setCreateTime(createTime);
+        cus.setName(name);
+        cus.setCreateBy(createBy);
+        cus.setPhone(phone);
+        cus.setAddress(address);
+        cus.setDescription(description);
+        cus.setBanquetDate(banquetDate);
+        cus.setBanquetVenue(banquetVenue);
+        cus.setChildrenAddress(childrenAddress);
+        cus.setChildrenName(childrenName);
+        cus.setChildrenPhone(childrenPhone);
+        cus.setNature(nature);
+        cus.setnPeopleName(nPeopleName);
+        cus.setnPeoplePhone(nPeoplePhone);
+        cus.setOwner(owner);
+        cus.setId(id);
+           flag=cs.save(cus);
+           //}
         PrintJson.printJsonFlag(response,flag);
     }
 

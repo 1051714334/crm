@@ -81,7 +81,7 @@ public class ClueServiceImpl implements ClueService {
             cus.setCreateBy(createBy);
             cus.setCreateTime(createTime);
             cus.setContactSummary(c.getContactSummary());
-            int count1=customerDao.save(cus);
+           int count1=customerDao.save(cus);
             if(count1!=1){
                 flag=false;
             }
