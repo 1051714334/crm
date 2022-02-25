@@ -22,6 +22,15 @@ public class Customer {
 	private String nPeoplePhone;
 	private String childrenAddress;
 	private String childrenPhone;
+	private String familyId;
+
+	public String getFamilyId() {
+		return familyId;
+	}
+
+	public void setFamilyId(String familyId) {
+		this.familyId = familyId;
+	}
 
 	public String getId() {
 		return id;

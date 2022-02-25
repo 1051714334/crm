@@ -66,8 +66,8 @@
         createTime,
         description,
         contactSummary,
-        nextContactTime
-
+        nextContactTime,
+        deposit
         )values(
         #{id},
         #{owner},
@@ -84,7 +84,8 @@
         #{createTime},
         #{description},
         #{contactSummary},
-        #{nextContactTime}
+        #{nextContactTime},
+        #{deposit}
         )
     </insert>
   	

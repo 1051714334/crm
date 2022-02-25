@@ -4,6 +4,26 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.bjpowernode.crm.workbench.dao.CustomerDao">
+    <update id="update" >
+        update set
+    </update>
+    <select id="getById" resultType="customer">
+      select
+          cus.id,
+          u.id as owner,
+          cus.name,
+          cus.website,
+          cus.phone,
+          cus.description,
+          cus.contactSummary,
+          cus.nextContactTime,
+          cus.address
+        from tbl_customer cus join tbl_user u on cus.owner=u.id
+     where cus.id=#{id}
+    </select>
+    <select id="getCustomerByPhones" resultType="customer" >
+        select * from tbl_customer where childrenPhone=#{phone} or nPeoplePhone=#{phone}
+    </select>
     <insert id="save">
         insert into tbl_customer(
 		id,
@@ -23,7 +43,9 @@
         nPeopleName,
         nPeoplePhone,
         childrenAddress,
-        childrenPhone
+        childrenPhone,
+        address,
+        familyId
 )values(
         #{id},
         #{owner},
@@ -42,7 +64,9 @@
         #{nPeopleName},
         #{nPeoplePhone},
         #{childrenAddress},
-        #{childrenPhone}
+        #{childrenPhone},
+        #{address},
+        #{familyId}
         )
     </insert>
     <select id="getCustomerListByCondition" resultType="customer">
@@ -51,10 +75,11 @@
         cus.name,
         u.name as owner,
         cus.phone,
-        cus.banquetDate,
-        cus.banquetVenue
+        t.expectedDate as banquetDate,
+        t.name as banquetVenue
         from tbl_customer cus join
     tbl_user u on cus.owner=u.id
+     left join tbl_tran t on t.customerId=cus.id
         <where>
             <if test="name!=null and name!=''">
                 cus.name like '%' #{name} '%'
@@ -96,8 +121,8 @@
         </if>
     </where>
 </select>
-    <select id="getCustomerByPhone" resultType="int">
-        select count(*) from tbl_customer where phone=#{phone}
+    <select id="getCustomerByPhone" resultType="customer">
+        select * from tbl_customer where phone=#{phone}
     </select>
     <select id="getCustomerName" resultType="string">
         select name from tbl_customer where name like '%' #{name} '%'

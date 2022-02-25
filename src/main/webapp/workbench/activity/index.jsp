@@ -211,7 +211,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                 });
                 $("#activityBody").html(html);
                 var totalPages=data.total%pageSize==0?data.total/pageSize:(parseInt(data.total/pageSize)+1);
-				//alert(data.total);
                 $("#activityPage").bs_pagination({
 					currentPage: pageNo, // 页码
 					rowsPerPage: pageSize, // 每页显示的记录条数
@@ -404,7 +403,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					  <input class="form-control time" type="text" id="search-startDate" />
 				    </div>
 				  </div>
-				  <div class="form-group">
+				 <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon ">结束日期</div>
 					  <input class="form-control time" type="text" id="search-endDate" >

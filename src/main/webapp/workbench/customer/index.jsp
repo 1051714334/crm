@@ -14,12 +14,21 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
-    <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 
+	<link rel="stylesheet" type="text/css" href="jquery/bs_pagination/jquery.bs_pagination.min.css">
+	<script type="text/javascript" src="jquery/bs_pagination/jquery.bs_pagination.min.js"></script>
+	<script type="text/javascript" src="jquery/bs_pagination/en.js"></script>
 <script type="text/javascript">
 
 	$(function(){
+		$("#xp").click(function () {
+			$("input[name=xz]").prop("checked",this.checked);
+		});
+		$("#customerBody").on("click",$("input[name=xz]"),function () {
+			$("#xp").prop("checked",$("input[name=xz]").length==$("input[name=xz]:checked").length);
+		})
         $(".time").datetimepicker({
 			minView: "month",
 			language:  'zh-CN',
@@ -53,6 +62,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						html+='<option value="'+n.id+'">'+n.name+'</option>';
 					});
 					$("#create-owner").html(html);
+					$("#create-owner").val('${u.id}');
                     $("#createCustomerModal").modal("show");
 				}
 			});
@@ -77,6 +87,8 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                     "description":$.trim($("#create-description").val()),
                     "contactSummary":$.trim($("#create-contactSummary").val()),
                     "nextContactTime":$.trim($("#create-nextContactTime").val()),
+					"money":$.trim($("#create-money").val()),
+					"deposit":$.trim($("#create-deposit").val()),
                     "address":$.trim($("#create-address1").val())
                 },
                 type:"post",
@@ -84,6 +96,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                 success:function (data) {
                     if(data.success){
                         $("#createCustomerModal").modal("hide");
+						pageList(1,2);
                     }else{
                         alert("添加失败,数据库中已有该数据。请到修改页通过手机号查询并修改该信息！");
                         $("#createCustomerModal").modal("hide");
@@ -91,12 +104,143 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                 }
             });
         });
+		pageList(1,2);
+		$("#searchBtn").click(function () {
+			$("#hidden-name").val($.trim($("#search-name").val()));
+			$("#hidden-owner").val($.trim($("#search-owner").val()));
+			$("#hidden-phone").val($.trim($("#search-phone").val()));
+			$("#hidden-startDate").val($.trim($("#search-startDate").val()));
+			$("#hidden-endDate").val($.trim($("#search-endDate").val()));
+			pageList(1,2);
+		});
+		$("#editBtn").click(function () {
+			if($("input[name=xz]:checked").length==0){
+				alert("请选中要修改的记录");
+			}else if($("input[name=xz]:checked").length>1){
+				alert("不可选中多条记录");
+			}else{
+				$.ajax({
+					url:"workbench/customer/getUserListAndCustomer.do",
+					data:{
+						"id":$("input[name=xz]:checked").val()
+					},
+					type:"get",
+					dataType:"json",
+					success:function (data) {
+						var html='<option></option>';
+						$.each(data.userList,function (i,n) {
+							html+='<option value="'+n.id+'">'+n.name+'</option>';
+						});
+						$("#edit-owner").html(html);
+						$("#hidden-userId").val(data.cus.id);
+						$("#edit-owner").val(data.cus.owner);
+						$("#edit-name").val(data.cus.name);
+						$("#edit-website").val(data.cus.website);
+						$("#edit-phone").val(data.cus.phone);
+						$("#edit-description").val(data.cus.description);
+						$("#edit-contactSummary").val(data.cus.contactSummary);
+						$("#edit-nextContactTime").val(data.cus.nextContactTime);
+						$("#edit-address").val(data.cus.address);
+						$("#editCustomerModal").modal("show");
+
+					}
+				});
+			}
+
+
+		});
+		$("#updateBtn").click(function () {
+			$.ajax({
+				url:"workbench/customer/update.do",
+				data:{
+			"id":$.trim($("#hidden-userId").val()),
+			"owner":$.trim($("#edit-owner").val()),
+			"name":$.trim($("#edit-name").val()),
+			"website":$.trim($("#edit-website").val()),
+			"phone":$.trim($("#edit-phone").val()),
+			"description":$.trim($("#edit-description").val()),
+			"contactSummary":$.trim($("#edit-contactSummary").val()),
+			"nextContactTime":$.trim($("#edit-nextContactTime").val()),
+			"address":$.trim($("#edit-address").val())
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data) {
+					if(data.success){
+						pageList(1,2);
+						$("#editCustomerModal").modal("hide");
+					}else{
+						alert("更新失败");
+						$("#editCustomerModal").modal("hide");
+					}
+				}
+			});
+		});
+
 	});
-	
+	function pageList(pageNo,pageSize) {
+		$("#xp").prop("checked",false);
+		$("#search-name").val($.trim($("#hidden-name").val()));
+		$("#search-owner").val($.trim($("#hidden-owner").val()));
+		$("#search-phone").val($.trim($("#hidden-phone").val()));
+		$("#search-startDate").val($.trim($("#hidden-startDate").val()));
+		$("#search-endDate").val($.trim($("#hidden-endDate").val()));
+		$.ajax({
+			url:"workbench/customer/pageList.do",
+			data:{
+				"pageNo":pageNo,
+				"pageSize":pageSize,
+				"name":$.trim($("#search-name").val()),
+				"owner":$.trim($("#search-owner").val()),
+				"phone":$.trim($("#search-phone").val()),
+				"startDate":$.trim($("#search-startDate").val()),
+				"endDate":$.trim($("#search-endDate").val())
+			},
+			type:"get",
+			dataType:"json",
+			success:function (data) {
+				var html='';
+				$.each(data.dataList,function (i,n) {
+				html+='<tr class="active">';
+				html+='<td><input name="xz" type="checkbox" value="'+n.id+'" /></td>';
+				html+='<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/customer/detail.jsp?id='+n.id+'\';">'+n.name+'</a></td>';
+				html+='<td>'+n.owner+'</td>';
+				html+='<td>'+n.phone+'</td>';
+				html+='<td>'+n.banquetDate+'</td>';
+				html+='<td>'+n.banquetVenue+'</td>';
+				html+='</tr>';
+				});
+				$("#customerBody").html(html);
+				var totalPages=data.total%pageSize==0?data.total/pageSize:(parseInt(data.total/pageSize))+1;
+				$("#customerPage").bs_pagination({
+					currentPage: pageNo, // 页码
+					rowsPerPage: pageSize, // 每页显示的记录条数
+					maxRowsPerPage: 20, // 每页最多显示的记录条数
+					totalPages: totalPages, // 总页数
+					totalRows: data.total, // 总记录条数
+
+					visiblePageLinks: 3, // 显示几个卡片
+
+					showGoToPage: true,
+					showRowsPerPage: true,
+					showRowsInfo: true,
+					showRowsDefaultInfo: true,
+
+					onChangePage : function(event, data){
+						pageList(data.currentPage , data.rowsPerPage);
+					}
+				});
+			}
+		});
+	}
 </script>
 </head>
 <body>
-
+	<input type="hidden" id="hidden-name"/>
+	<input type="hidden" id="hidden-owner"/>
+	<input type="hidden" id="hidden-phone"/>
+	<input type="hidden" id="hidden-startDate"/>
+	<input type="hidden" id="hidden-endDate"/>
 	<!-- 创建客户的模态窗口 -->
 	<div class="modal fade" id="createCustomerModal" role="dialog">
 		<div class="modal-dialog" role="document" style="width: 85%;">
@@ -151,6 +295,16 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 								<input type="text" class="form-control" id="create-phone">
 							</div>
 						</div>
+						<div class="form-group">
+							<label for="create-website" class="col-sm-2 control-label">宴会金额</label>
+							<div class="col-sm-10" style="width: 300px;">
+								<input type="text" class="form-control" id="create-money">
+							</div>
+							<label for="create-phone" class="col-sm-2 control-label">宴会订金</label>
+							<div class="col-sm-10" style="width: 300px;">
+								<input type="text" class="form-control" id="create-deposit">
+							</div>
+						</div>
                         <div class="form-group">
                             <label for="create-website" class="col-sm-2 control-label">子/女姓名</label>
                             <div class="col-sm-10" style="width: 300px;">
@@ -181,6 +335,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                                 <input type="text" class="form-control" id="create-childrenAddress">
                             </div>
                         </div>
+
 						<div class="form-group">
 							<label for="create-describe" class="col-sm-2 control-label">描述</label>
 							<div class="col-sm-10" style="width: 81%;">
@@ -239,35 +394,35 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					<form class="form-horizontal" role="form">
 					
 						<div class="form-group">
+							</input type="hidden" id="hidden-userId">
 							<label for="edit-customerOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="edit-customerOwner">
-								  <option>zhangsan</option>
+								<select class="form-control" id="edit-owner">
+								  <%--<option>zhangsan</option>
 								  <option>lisi</option>
-								  <option>wangwu</option>
+								  <option>wangwu</option>--%>
 								</select>
 							</div>
 							<label for="edit-customerName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-customerName" value="动力节点">
+								<input type="text" class="form-control" id="edit-name">
 							</div>
 						</div>
-						
 						<div class="form-group">
-                            <label for="edit-website" class="col-sm-2 control-label">公司网站</label>
+                            <label for="edit-website" class="col-sm-2 control-label">个人邮箱</label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-website" value="http://www.bjpowernode.com">
+                                <input type="text" class="form-control" id="edit-website">
                             </div>
-							<label for="edit-phone" class="col-sm-2 control-label">公司座机</label>
+							<label for="edit-phone" class="col-sm-2 control-label">电话号码</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-phone" value="010-84846003">
+								<input type="text" class="form-control" id="edit-phone">
 							</div>
 						</div>
 						
 						<div class="form-group">
 							<label for="edit-describe" class="col-sm-2 control-label">描述</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="edit-describe"></textarea>
+								<textarea class="form-control" rows="3" id="edit-description"></textarea>
 							</div>
 						</div>
 						
@@ -277,13 +432,13 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                             <div class="form-group">
                                 <label for="create-contactSummary1" class="col-sm-2 control-label">联系纪要</label>
                                 <div class="col-sm-10" style="width: 81%;">
-                                    <textarea class="form-control" rows="3" id="create-contactSummary1"></textarea>
+                                    <textarea class="form-control" rows="3" id="edit-contactSummary"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="create-nextContactTime2" class="col-sm-2 control-label">下次联系时间</label>
                                 <div class="col-sm-10" style="width: 300px;">
-                                    <input type="text" class="form-control" id="create-nextContactTime2">
+                                    <input type="text" class="form-control" id="edit-nextContactTime">
                                 </div>
                             </div>
                         </div>
@@ -294,7 +449,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                             <div class="form-group">
                                 <label for="create-address" class="col-sm-2 control-label">详细地址</label>
                                 <div class="col-sm-10" style="width: 81%;">
-                                    <textarea class="form-control" rows="1" id="create-address">北京大兴大族企业湾</textarea>
+                                    <textarea class="form-control" rows="1" id="edit-address"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -303,7 +458,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+					<button type="button" id="updateBtn">更新</button>
 				</div>
 			</div>
 		</div>
@@ -330,39 +485,44 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">名称</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="search-name" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">所有者</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="search-owner" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">电话号码</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="search-phone" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">个人邮箱</div>
-				      <input class="form-control" type="text">
+				      <div class="input-group-addon">开始日期</div>
+				      <input class="form-control" id="search-startDate" type="text">
 				    </div>
 				  </div>
+					<div class="form-group">
+						<div class="input-group">
+							<div class="input-group-addon">结束日期</div>
+							<input class="form-control" id="search-endDate" type="text">
+						</div>
+					</div>
 				  
-				  <button type="submit" class="btn btn-default">查询</button>
-				  
+				  <button type="button" id="searchBtn" class="btn btn-default">查询</button>
 				</form>
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
 				  <button type="button" class="btn btn-primary" id="addBut"><span class="glyphicon glyphicon-plus"></span> 创建</button>
-				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editCustomerModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
+				  <button type="button" class="btn btn-default" id="editBtn"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
 				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				
@@ -371,16 +531,17 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				<table class="table table-hover">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td><input type="checkbox" /></td>
+							<td><input id="xp" type="checkbox" /></td>
 							<td>名称</td>
 							<td>所有者</td>
 							<td>电话号码</td>
-							<td>个人邮箱</td>
+							<td>宴会时间</td>
+							<td>宴会地点</td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td><input type="checkbox" /></td>
+					<tbody id="customerBody">
+						<%--<tr>
+							<td><input type="checkbox"/></td>
 							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/customer/detail.jsp';">动力节点</a></td>
 							<td>zhangsan</td>
 							<td>010-84846003</td>
@@ -392,13 +553,14 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                             <td>zhangsan</td>
                             <td>010-84846003</td>
                             <td>http://www.bjpowernode.com</td>
-                        </tr>
+                        </tr>--%>
 					</tbody>
 				</table>
 			</div>
 			
 			<div style="height: 50px; position: relative;top: 30px;">
-				<div>
+				<div id="customerPage"></div>
+				<%--<div>
 					<button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>
 				</div>
 				<div class="btn-group" style="position: relative;top: -34px; left: 110px;">
@@ -429,7 +591,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							<li class="disabled"><a href="#">末页</a></li>
 						</ul>
 					</nav>
-				</div>
+				</div>--%>
 			</div>
 			
 		</div>

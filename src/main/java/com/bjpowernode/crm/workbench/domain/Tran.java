@@ -21,6 +21,15 @@ public class Tran {
 	private String contactSummary;	//联系纪要
 	private String nextContactTime;	//下次联系时间
 	private String possibility;
+	private String deposit;
+
+	public String getDeposit() {
+		return deposit;
+	}
+
+	public void setDeposit(String deposit) {
+		this.deposit = deposit;
+	}
 
 	public String getPossibility() {
 		return possibility;

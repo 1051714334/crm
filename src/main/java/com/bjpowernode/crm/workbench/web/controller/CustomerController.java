@@ -9,6 +9,7 @@ import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
 import com.bjpowernode.crm.vo.PaginationVo;
 import com.bjpowernode.crm.workbench.domain.Customer;
+import com.bjpowernode.crm.workbench.domain.Tran;
 import com.bjpowernode.crm.workbench.service.CustomerService;
 import com.bjpowernode.crm.workbench.service.impl.CustomerServiceImpl;
 
@@ -31,7 +32,43 @@ public class CustomerController extends HttpServlet {
            save(request, response);
         }else if("/workbench/customer/pageList.do".equals(path)){
             pageList(request,response);
+        }else if("/workbench/customer/getUserListAndCustomer.do".equals(path)){
+            getUserListAndCustomer(request,response);
+        }else if("/workbench/customer/update.do".equals(path)){
+            update(request,response);
         }
+    }
+
+    private void update(HttpServletRequest request, HttpServletResponse response) {
+        CustomerService cs= (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
+                String id=request.getParameter("id");
+                String owner=request.getParameter("owner");
+                String name=request.getParameter("name");
+                String website=request.getParameter("website");
+                String phone=request.getParameter("phone");
+                String description=request.getParameter("description");
+                String contactSummary=request.getParameter("contactSummary");
+                String nextContactTime=request.getParameter("nextContactTime");
+                String address=request.getParameter("address");
+                Customer cus=new Customer();
+                cus.setId(id);
+                cus.setOwner(owner);
+                cus.setName(name);
+                cus.setWebsite(website);
+                cus.setPhone(phone);
+                cus.setDescription(description);
+                cus.setContactSummary(contactSummary);
+                cus.setNextContactTime(nextContactTime);
+                cus.setAddress(address);
+                boolean flag=cs.update(cus);
+                PrintJson.printJsonFlag(response,flag);
+    }
+
+    private void getUserListAndCustomer(HttpServletRequest request, HttpServletResponse response) {
+    String id=request.getParameter("id");
+    CustomerService cs= (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
+    Map<String,Object> map=cs.getUserListAndCustomer(id);
+    PrintJson.printJsonObj(response,map);
     }
 
     private void pageList(HttpServletRequest request, HttpServletResponse response) {
@@ -60,13 +97,7 @@ public class CustomerController extends HttpServlet {
         CustomerService cs= (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
 
         String phone=request.getParameter("phone");
-       // int count=cs.getCustomerByPhone(phone);
         boolean flag;
-        /*if(count>=1){
-            flag=false;
-            PrintJson.printJsonFlag(response,flag);
-           return;
-        }else{*/
           Customer cus=new Customer();
             String id=UUIDUtil.getUUID();
             String owner=request.getParameter("owner");
@@ -80,6 +111,8 @@ public class CustomerController extends HttpServlet {
             String address=request.getParameter("address");
             String banquetDate=request.getParameter("banquetDate");
             String banquetVenue=request.getParameter("banquetVenue");
+            String deposit=request.getParameter("deposit");
+            String money=request.getParameter("money");
             String nature=request.getParameter("nature");
             String childrenName=request.getParameter("childrenName");
             String nPeopleName=request.getParameter("nPeopleName");
@@ -87,7 +120,7 @@ public class CustomerController extends HttpServlet {
             String childrenAddress=request.getParameter("childrenAddress");
             String childrenPhone=request.getParameter("childrenPhone");
 
-     cus.setContactSummary(contactSummary);
+            cus.setContactSummary(contactSummary);
         cus.setWebsite(website);
         cus.setNextContactTime(nextContactTime);
         cus.setCreateTime(createTime);
@@ -96,8 +129,8 @@ public class CustomerController extends HttpServlet {
         cus.setPhone(phone);
         cus.setAddress(address);
         cus.setDescription(description);
-        cus.setBanquetDate(banquetDate);
-        cus.setBanquetVenue(banquetVenue);
+        //cus.setBanquetDate(banquetDate);
+       // cus.setBanquetVenue(banquetVenue);
         cus.setChildrenAddress(childrenAddress);
         cus.setChildrenName(childrenName);
         cus.setChildrenPhone(childrenPhone);
@@ -106,7 +139,24 @@ public class CustomerController extends HttpServlet {
         cus.setnPeoplePhone(nPeoplePhone);
         cus.setOwner(owner);
         cus.setId(id);
-           flag=cs.save(cus);
+
+        Tran t=new Tran();
+        t.setId(UUIDUtil.getUUID());
+        t.setOwner(owner);
+        t.setMoney(money);
+        t.setName(banquetVenue);
+        t.setExpectedDate(banquetDate);
+        t.setCustomerId(cus.getId());
+        t.setDeposit(deposit);
+        t.setStage("07成交");
+        t.setCreateBy(createBy);
+        t.setCreateTime(createTime);
+        t.setDescription(description);
+        t.setContactSummary(contactSummary);
+        t.setNextContactTime(nextContactTime);
+
+
+           flag=cs.save(cus,t);
            //}
         PrintJson.printJsonFlag(response,flag);
     }
