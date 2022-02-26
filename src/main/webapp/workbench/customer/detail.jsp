@@ -18,7 +18,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	var cancelAndSaveBtnDefault = true;
 	
 	$(function(){
-
 		$("#editBtn").click(function () {
 				$.ajax({
 					url:"workbench/customer/getUserListAndCustomer.do",
@@ -110,24 +109,146 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			$(this).children("span").css("color","#E6E6E6");
 		});
 		showRemarkList();
-
+		$("#remarkBody").on("mouseover",".remarkDiv",function(){
+			$(this).children("div").children("div").show();
+		})
+		$("#remarkBody").on("mouseout",".remarkDiv",function(){
+			$(this).children("div").children("div").hide();
+		})
+		$("#saveRemarkBtn").click(function () {
+			$.ajax({
+				url:"workbench/customer/saveRemark.do",
+				data:{
+					"noteContent":$.trim($("#remark").val()),
+					"customerId":"${cus.id}"
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data) {
+					if(data.success){
+						$("#remark").val("");
+						var html='';
+						html += '<div id="'+data.cus.id+'" class="remarkDiv" style="height: 60px;">';
+						html += '<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">';
+						html += '<div style="position: relative; top: -40px; left: 40px;" >';
+						html += '<h5 id="n'+data.cus.id+'">'+data.cus.noteContent+'</h5>';
+						html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${cus.name}</b> <small style="color: gray;" id="s'+data.cus.id+'"> '+data.cus.createTime+' 由'+data.cus.createBy+'</small>';
+						html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">';
+						html += '<a class="myHref" href="javascript:void(0);" onclick="editRemark(\''+data.cus.id+'\')"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #FF0000;"></span></a>';
+						html += '&nbsp;&nbsp;&nbsp;&nbsp;';
+						html += '<a class="myHref" onclick="deleteRemark(\''+data.cus.id+'\')" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #FF0000;"></span></a>';
+						html += '</div>';
+						html += '</div>';
+						html += '</div>';
+						$("#remarkDiv").before(html);
+					}else{
+						alert("添加备注失败");
+					}
+				}
+			});
+		});
+        $("#updateRemarkBtn").click(function () {
+            var id=$("#remarkId").val();
+            $.ajax({
+                url:"workbench/customer/updateRemark.do",
+                data:{
+                    "id":id,
+                    "noteContent":$.trim($("#noteContent").val())
+                },
+                type:"post",
+                dataType:"json",
+                success:function (data) {
+                    if(data.success){
+                        $("#n"+id).html(data.cr.noteContent);
+                        $("#s"+id).html(data.cr.editTime+" 由"+data.cr.editBy);
+                        $("#editRemarkModal").modal("hide");
+                    }else{
+                        alert("修改备注信息失败");
+                    }
+                }
+            });
+        });
+		tranList();
 	});
-	/*function showRemarkList() {
+	function tranList() {
+		$.ajax({
+			url:"workbench/customer/getTranList.do",
+			data:{
+				"id":"${cus.id}"
+			},
+			type:"get",
+			dataType:"json",
+			success:function (data) {
+
+				var html='';
+				$.each(data,function (i,n) {
+					html+='<tr>';
+					html+='<td><a href="workbench/transaction/detail.do?id='+n.id+'" style="text-decoration: none;">'+n.name+'-'+n.owner+'</a></td>';
+					html+='<td>'+n.money+'</td>';
+					html+='<td>'+n.stage+'</td>';
+					html+='<td>90</td>';
+					html+='<td>'+n.expectedDate+'</td>';
+					html+='<td>'+n.type+'</td>';
+					html+='<td>'+n.deposit+'</td>';
+					html+='</tr>';
+				});
+				$("#tarnBody").html(html);
+
+			}
+		});
+	/*<tr>
+		<td><a href="transaction/detail.html" style="text-decoration: none;">动力节点-交易01</a></td>
+		<td>5,000</td>
+		<td>谈判/复审</td>
+		<td>90</td>
+		<td>2017-02-07</td>
+		<td>新业务</td>
+		<td><a href="javascript:void(0);" data-toggle="modal" data-target="#removeTransactionModal" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>
+		</tr>*/
+	}
+    function deleteRemark(id) {
+        if(confirm("确认删除此备注？")){
+            $.ajax({
+                url:"workbench/customer/deleteRemark.do",
+                data:{
+                    "id":id
+                },
+                type:"post",
+                dataType:"json",
+                success:function (data) {
+                    if(data.success){
+                        $("#"+id).remove();
+                    }else{
+                        alert("删除备注失败");
+                    }
+                }
+            });
+        }
+    }
+    function editRemark(id) {
+        $("#remarkId").val(id);
+        $("#noteContent").val($("#n"+id).html());
+        $("#editRemarkModal").modal("show");
+
+    }
+
+	function showRemarkList() {
 			$.ajax({
 				url:"workbench/customer/showRemarkList.do",
 				data:{
-					"customerId":"\${cus.id}"
+					"customerId":"${cus.id}"
 				},
 				type:"get",
 				dataType:"json",
 				success:function (data) {
+
 					var html="";
 					$.each(data,function (i,n) {
 						html += '<div id="'+n.id+'" class="remarkDiv" style="height: 60px;">';
 						html += '<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">';
 						html += '<div style="position: relative; top: -40px; left: 40px;" >';
 						html += '<h5 id="n'+n.id+'">'+n.noteContent+'</h5>';
-						html += '<font color="gray">市场活动</font> <font col or="gray">-</font> <b>\${a.name}</b> <small style="color: gray;" id="s'+n.id+'"> '+(n.editFlag==0?n.createTime:n.editTime)+' 由'+(n.editFlag==0?n.createBy:n.editBy)+'</small>';
+						html += '<font color="gray">联系人</font> <font col or="gray">-</font> <b>${cus.name}</b> <small style="color: gray;" id="s'+n.id+'"> '+(n.editFlag==0?n.createTime:n.editTime)+' 由'+(n.editFlag==0?n.createBy:n.editBy)+'</small>';
 						html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">';
 						html += '<a class="myHref" href="javascript:void(0);" onclick="editRemark(\''+n.id+'\')" ><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #FF0000;"></span></a>';
 						html += '&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -140,11 +261,41 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				}
 			});
 
-		}*/
+		}
+
 </script>
 
 </head>
 <body>
+<!-- 修改倍注模态窗口 -->
+<div class="modal fade" id="editRemarkModal" role="dialog">
+    <%-- 备注的id --%>
+    <input type="hidden" id="remarkId">
+    <div class="modal-dialog" role="document" style="width: 40%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel12">修改备注</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="edit-describe" class="col-sm-2 control-label">内容</label>
+                        <div class="col-sm-10" style="width: 81%;">
+                            <textarea class="form-control" rows="3" id="noteContent"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="updateRemarkBtn">更新</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 	<!-- 删除联系人的模态窗口 -->
 	<div class="modal fade" id="removeContactsModal" role="dialog">
@@ -486,7 +637,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	</div>
 	
 	<!-- 备注 -->
-	<div style="position: relative; top: 10px; left: 40px;">
+	<div id="remarkBody" style="position: relative; top: 10px; left: 40px;">
 		<div class="page-header">
 			<h4>备注</h4>
 		</div>
@@ -524,7 +675,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
 				<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
 					<button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-					<button type="button" class="btn btn-primary">保存</button>
+					<button type="button" class="btn btn-primary" id="saveRemarkBtn">保存</button>
 				</p>
 			</form>
 		</div>
@@ -544,13 +695,14 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							<td>金额</td>
 							<td>阶段</td>
 							<td>可能性</td>
-							<td>预计成交日期</td>
-							<td>类型</td>
+							<td>宴会日期</td>
+							<td>宴会类型</td>
+							<td>宴会订金</td>
 							<td></td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
+					<tbody id="tarnBody">
+						<%--<tr>
 							<td><a href="transaction/detail.html" style="text-decoration: none;">动力节点-交易01</a></td>
 							<td>5,000</td>
 							<td>谈判/复审</td>
@@ -558,7 +710,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							<td>2017-02-07</td>
 							<td>新业务</td>
 							<td><a href="javascript:void(0);" data-toggle="modal" data-target="#removeTransactionModal" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>
-						</tr>
+						</tr>--%>
 					</tbody>
 				</table>
 			</div>
@@ -570,7 +722,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	</div>
 	
 	<!-- 联系人 -->
-	<div>
+	<%--<div>
 		<div style="position: relative; top: 20px; left: 40px;">
 			<div class="page-header">
 				<h4>联系人</h4>
@@ -600,7 +752,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				<a href="javascript:void(0);" data-toggle="modal" data-target="#createContactsModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>新建联系人</a>
 			</div>
 		</div>
-	</div>
+	</div>--%>
 	
 	<div style="height: 200px;"></div>
 </body>

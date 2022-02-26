@@ -283,10 +283,10 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                             <label for="create-customerIdentity" class="col-sm-2 control-label">宴会性质<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <select class="form-control" id="create-nature">
-                                    <option value="hy">婚宴</option>
-                                    <option value="hm">回门</option>
-                                    <option value="zs">周岁</option>
-                                    <option value="se">十二</option>
+                                    <option value="婚宴">婚宴</option>
+                                    <option value="回门">回门</option>
+                                    <option value="周岁">周岁</option>
+                                    <option value="十二">十二</option>
                                 </select>
                             </div>
 
