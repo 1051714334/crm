@@ -98,6 +98,7 @@
         <url-pattern>/workbench/customer/update.do</url-pattern>
         <url-pattern>/workbench/customer/detail.do</url-pattern>
         <url-pattern>/workbench/customer/showRemarkList.do</url-pattern>
+        <url-pattern>/workbench/customer/saveRemark.do</url-pattern>
     </servlet-mapping>
     <!--
     add/create:跳转到添加操作，或者打开添加操作模态窗口
