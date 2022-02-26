@@ -23,6 +23,15 @@ public class Tran {
 	private String possibility;
 	private String deposit;
 
+	public String getNature() {
+		return nature;
+	}
+
+	public void setNature(String nature) {
+		this.nature = nature;
+	}
+
+	private String nature;
 	public String getDeposit() {
 		return deposit;
 	}

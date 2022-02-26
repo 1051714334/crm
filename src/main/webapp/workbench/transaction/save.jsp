@@ -23,6 +23,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 <script type="text/javascript" src="jquery/bs_typeahead/bootstrap3-typeahead.min.js"></script>
 	<script>
 	$(function () {
+		alert("${cusId}");
 		$("#create-customerName").typeahead({
 			source: function (query, process) {
 				$.post(
@@ -186,7 +187,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		<div class="form-group">
 			<label for="create-transactionOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<select class="form-control" id="create-transactionOwner" name="owner">
+				<select class="form-control" id="create-owner" name="owner">
 				  <option></option>
 				 <c:forEach items="${uList}" var="u">
 					 <option value="${u.id}" ${u.id eq user.id?"selected":""}>${u.name}</option>
@@ -195,18 +196,18 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			</div>
 			<label for="create-amountOfMoney" class="col-sm-2 control-label">金额</label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-amountOfMoney" name="money">
+				<input type="text" class="form-control" id="create-money" name="money">
 			</div>
 		</div>
 		
 		<div class="form-group">
-			<label for="create-transactionName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
+			<label for="create-transactionName" class="col-sm-2 control-label">宴会地点<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-transactionName" name="name">
+				<input type="text" class="form-control" id="create-name" name="name">
 			</div>
-			<label for="create-expectedClosingDate" class="col-sm-2 control-label">预计成交日期<span style="font-size: 15px; color: red;">*</span></label>
+			<label for="create-expectedClosingDate" class="col-sm-2 control-label">仪式日期<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control time1" id="create-expectedClosingDate" name="expectedDate">
+				<input type="text" class="form-control time1" id="create-expectedDate" name="expectedDate">
 			</div>
 		</div>
 		
@@ -227,13 +228,14 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		</div>
 		
 		<div class="form-group">
-			<label for="create-transactionType" class="col-sm-2 control-label">类型</label>
+			<label for="create-transactionType" class="col-sm-2 control-label">宴会类型</label>
 			<div class="col-sm-10" style="width: 300px;">
-				<select class="form-control" id="create-transactionType" name="type">
+				<select class="form-control" id="create-type" name="type">
 				  <option></option>
-					<c:forEach items="${transactionTypeList}" var="t">
+					<c:forEach items="${yTypeList}" var="t">
 						<option value="${t.value}">${t.text}</option>
 					</c:forEach>
+
 				</select>
 			</div>
 			<label for="create-possibility" class="col-sm-2 control-label">可能性</label>
@@ -241,31 +243,42 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				<input type="text" class="form-control" id="create-possibility">
 			</div>
 		</div>
-		
 		<div class="form-group">
-			<label for="create-clueSource" class="col-sm-2 control-label">来源</label>
+			<label for="create-transactionName" class="col-sm-2 control-label">订金<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<select class="form-control" id="create-clueSource" name="source">
+				<input type="text" class="form-control" id="create-deposit" name="deposit">
+			</div>
+			<label for="create-transactionName" class="col-sm-2 control-label">客户电话<span style="font-size: 15px; color: red;">*</span></label>
+			<div class="col-sm-10" style="width: 300px;">
+				<input type="text" class="form-control" id="create-customerPhone" name="customerPhone">
+			</div>
+			<input type="hidden" name="customerId" value="${cusId}"/>
+		</div>
+
+	<%--<div class="form-group">
+			<label for="create-clueSource" class="col-sm-2 control-label">客户电话</label>
+			<div class="col-sm-10" style="width: 300px;">
+				<select class="form-control" id="create-customerPhone" name="source">
 				  <option></option>
 					<c:forEach items="${sourceList}" var="s">
 						<option value="${s.value}">${s.text}</option>
 					</c:forEach>
 				</select>
-			</div>
-			<label for="create-activitySrc" class="col-sm-2 control-label">市场活动源&nbsp;&nbsp;<a href="javascript:void(0);" data-toggle="modal" data-target="#findMarketActivity"><span class="glyphicon glyphicon-search"></span></a></label>
+			</div>--%>
+			<%--<label for="create-activitySrc" class="col-sm-2 control-label">市场活动源&nbsp;&nbsp;<a href="javascript:void(0);" data-toggle="modal" data-target="#findMarketActivity"><span class="glyphicon glyphicon-search"></span></a></label>
 			<div class="col-sm-10" style="width: 300px;">
 				<input type="text" class="form-control" value="发传单1" id="create-activitySrc">
 				<input type="hidden" name="activityId" value="708823b3b73941eaadfa90783b946e39"/>
 			</div>
-		</div>
+		</div>--%>
 		
-		<div class="form-group">
-			<label for="create-contactsName" class="col-sm-2 control-label">联系人名称&nbsp;&nbsp;<a href="javascript:void(0);" data-toggle="modal" data-target="#findContacts"><span class="glyphicon glyphicon-search"></span></a></label>
+		<%--<div class="form-group">
+			<label for="create-contactsName" class="col-sm-2 control-label">新人名称&nbsp;&nbsp;<a href="javascript:void(0);" data-toggle="modal" data-target="#findContacts"><span class="glyphicon glyphicon-search"></span></a></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-contactsName" value="马云">
+				<input type="text" class="form-control" id="create-customerChildrenName">
 				<input type="hidden" name="contactsId" value="96369d597bac415e8df81c080f13ee0c"/>
 			</div>
-		</div>
+		</div>--%>
 		
 		<div class="form-group">
 			<label for="create-describe" class="col-sm-2 control-label">描述</label>

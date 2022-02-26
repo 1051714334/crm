@@ -16,4 +16,6 @@ public interface TranDao {
     int getTotal();
 
     List<Map<String,Object>> getCharts();
+
+    List<Tran> getTranList(String customerId);
 }

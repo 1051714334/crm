@@ -105,6 +105,7 @@ public class TranController extends HttpServlet {
         String name=request.getParameter("name");
         String expectedDate=request.getParameter("expectedDate");
         String customerName=request.getParameter("customerName");
+        String customerPhone=request.getParameter("customerPhone");
         String stage=request.getParameter("stage");
         String type=request.getParameter("type");
         String source=request.getParameter("source");
@@ -115,6 +116,9 @@ public class TranController extends HttpServlet {
         String description=request.getParameter("description");
         String contactSummary=request.getParameter("contactSummary");
         String nextContactTime=request.getParameter("nextContactTime");
+        String customerId=request.getParameter("customerId");
+        String deposit=request.getParameter("deposit");
+        System.out.println(customerId+"+++++++++++++++++++++++++");
         Tran t=new Tran();
         t.setContactsId(contactsId);
         t.setId(id);
@@ -131,7 +135,8 @@ public class TranController extends HttpServlet {
         t.setName(name);
         t.setOwner(owner);
         t.setMoney(money);
-        boolean flag=ts.save(t,customerName);
+        t.setDeposit(deposit);
+        boolean flag=ts.save(t,customerName,customerId);
         if(flag){
             response.sendRedirect(request.getContextPath()+"/workbench/transaction/index.jsp");
         }
@@ -148,6 +153,10 @@ public class TranController extends HttpServlet {
     private void add(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
         UserService us= (UserService) ServiceFactory.getService(new UserServiceImpl());
         List<User> uList=us.getUserList();
+        String id=request.getParameter("id");
+        if(!("".equals(id))){
+            request.setAttribute("cusId",id);
+        }
         request.setAttribute("uList",uList);
         request.getRequestDispatcher("/workbench/transaction/save.jsp").forward(request,response);
     }

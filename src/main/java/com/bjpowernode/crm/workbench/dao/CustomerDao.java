@@ -22,4 +22,8 @@ public interface CustomerDao {
     Customer getById(String id);
 
     int update(Customer cus);
+
+    List<Customer>  getCustomerByFamilyId(String familyId);
+
+    List<Customer>  getCustomerById(String id);
 }

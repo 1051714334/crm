@@ -9,6 +9,7 @@ import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
 import com.bjpowernode.crm.vo.PaginationVo;
 import com.bjpowernode.crm.workbench.domain.Customer;
+import com.bjpowernode.crm.workbench.domain.CustomerRemark;
 import com.bjpowernode.crm.workbench.domain.Tran;
 import com.bjpowernode.crm.workbench.service.CustomerService;
 import com.bjpowernode.crm.workbench.service.impl.CustomerServiceImpl;
@@ -38,7 +39,92 @@ public class CustomerController extends HttpServlet {
             update(request,response);
         }else if("/workbench/customer/detail.do".equals(path)){
             detail(request,response);
+        }else if("/workbench/customer/showRemarkList.do".equals(path)){
+            showRemarkList(request,response);
+        }else if("/workbench/customer/saveRemark.do".equals(path)){
+            saveRemark(request,response);
+        }else if("/workbench/customer/deleteRemark.do".equals(path)){
+            deleteRemark(request,response);
+        }else if("/workbench/customer/updateRemark.do".equals(path)){
+            updateRemark(request,response);
+        }else if("/workbench/customer/getTranList.do".equals(path)){
+            getTranList(request,response);
+        }else if("/workbench/customer/getScusList.do".equals(path)){
+            getScusList(request,response);
         }
+    }
+
+    private void getScusList(HttpServletRequest request, HttpServletResponse response) {
+        String familyId=request.getParameter("familyId");
+        String id=request.getParameter("id");
+        CustomerService cs= (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
+        Map<String,Object> map=cs.getScusList(familyId,id);
+        PrintJson.printJsonObj(response,map);
+    }
+
+    private void getTranList(HttpServletRequest request, HttpServletResponse response) {
+        CustomerService cs= (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
+    String customerId=request.getParameter("id");
+    List<Tran> tList=cs.getTranList(customerId);
+    PrintJson.printJsonObj(response,tList);
+    }
+
+    private void updateRemark(HttpServletRequest request, HttpServletResponse response) {
+        String id=request.getParameter("id");
+        String noteContent=request.getParameter("noteContent");
+        String editTime=DateTimeUtil.getSysTime();
+        String editBy=((User)request.getSession().getAttribute("user")).getName();
+        String editFlag="1";
+        CustomerRemark cr=new CustomerRemark();
+        cr.setId(id);
+        cr.setNoteContent(noteContent);
+        cr.setEditFlag(editFlag);
+        cr.setEditBy(editBy);
+        cr.setEditTime(editTime);
+        CustomerService cs= (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
+        boolean flag=cs.updateRemark(cr);
+        Map<String,Object> map=new HashMap<String, Object>();
+        map.put("success",flag);
+        map.put("cr",cr);
+        PrintJson.printJsonObj(response,map);
+    }
+
+    private void deleteRemark(HttpServletRequest request, HttpServletResponse response) {
+   CustomerService cs= (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
+   String id=request.getParameter("id");
+   boolean flag=cs.deleteRemark(id);
+   PrintJson.printJsonFlag(response,flag);
+    }
+
+    private void saveRemark(HttpServletRequest request, HttpServletResponse response) {
+
+            String noteContent=request.getParameter("noteContent");
+            String customerId=request.getParameter("customerId");
+            String id=UUIDUtil.getUUID();
+            String createTime=DateTimeUtil.getSysTime();
+            String createBy=((User)request.getSession().getAttribute("user")).getName();
+            String editFlag="0";
+            CustomerRemark cusRemark=new CustomerRemark();
+        cusRemark.setId(id);
+        cusRemark.setCustomerId(customerId);
+        cusRemark.setCreateBy(createBy);
+        cusRemark.setCreateTime(createTime);
+        cusRemark.setEditFlag(editFlag);
+        cusRemark.setNoteContent(noteContent);
+            CustomerService as= (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
+            boolean flag=as.saveRemark(cusRemark);
+            Map<String,Object> map=new HashMap<String, Object>();
+            map.put("success",flag);
+            map.put("cus",cusRemark);
+            PrintJson.printJsonObj(response,map);
+
+    }
+
+    private void showRemarkList(HttpServletRequest request, HttpServletResponse response) {
+        String customerId=request.getParameter("customerId");
+        CustomerService cs= (CustomerService) ServiceFactory.getService(new CustomerServiceImpl());
+       List<CustomerRemark>  ckList=cs.showRemarkList(customerId);
+        PrintJson.printJsonObj(response,ckList);
     }
 
     private void detail(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException  {
@@ -133,7 +219,6 @@ public class CustomerController extends HttpServlet {
             String nPeoplePhone=request.getParameter("nPeoplePhone");
             String childrenAddress=request.getParameter("childrenAddress");
             String childrenPhone=request.getParameter("childrenPhone");
-
             cus.setContactSummary(contactSummary);
         cus.setWebsite(website);
         cus.setNextContactTime(nextContactTime);
@@ -143,12 +228,9 @@ public class CustomerController extends HttpServlet {
         cus.setPhone(phone);
         cus.setAddress(address);
         cus.setDescription(description);
-        //cus.setBanquetDate(banquetDate);
-       // cus.setBanquetVenue(banquetVenue);
         cus.setChildrenAddress(childrenAddress);
         cus.setChildrenName(childrenName);
         cus.setChildrenPhone(childrenPhone);
-        cus.setNature(nature);
         cus.setnPeopleName(nPeopleName);
         cus.setnPeoplePhone(nPeoplePhone);
         cus.setOwner(owner);
@@ -169,8 +251,7 @@ public class CustomerController extends HttpServlet {
         t.setDescription(description);
         t.setContactSummary(contactSummary);
         t.setNextContactTime(nextContactTime);
-
-
+        t.setType(nature);
            flag=cs.save(cus,t);
            //}
         PrintJson.printJsonFlag(response,flag);

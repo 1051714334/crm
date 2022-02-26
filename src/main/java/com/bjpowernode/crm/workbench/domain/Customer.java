@@ -16,7 +16,6 @@ public class Customer {
 	private String address;
 	private String banquetDate;
 	private String banquetVenue;
-	private String nature;
 	private String childrenName;
 	private String nPeopleName;
 	private String nPeoplePhone;
@@ -151,15 +150,6 @@ public class Customer {
 	public void setBanquetVenue(String banquetVenue) {
 		this.banquetVenue = banquetVenue;
 	}
-
-	public String getNature() {
-		return nature;
-	}
-
-	public void setNature(String nature) {
-		this.nature = nature;
-	}
-
 	public String getChildrenName() {
 		return childrenName;
 	}

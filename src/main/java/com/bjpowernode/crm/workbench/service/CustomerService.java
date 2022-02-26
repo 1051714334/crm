@@ -2,6 +2,7 @@ package com.bjpowernode.crm.workbench.service;
 
 import com.bjpowernode.crm.vo.PaginationVo;
 import com.bjpowernode.crm.workbench.domain.Customer;
+import com.bjpowernode.crm.workbench.domain.CustomerRemark;
 import com.bjpowernode.crm.workbench.domain.Tran;
 
 import java.util.List;
@@ -18,4 +19,16 @@ public interface CustomerService {
     boolean update(Customer cus);
 
     Customer detail(String id);
+
+    List<CustomerRemark> showRemarkList(String customerId);
+
+    boolean saveRemark(CustomerRemark cusRemark);
+
+    boolean deleteRemark(String id);
+
+    boolean updateRemark(CustomerRemark cr);
+
+    List<Tran> getTranList(String customerId);
+
+    Map<String, Object> getScusList(String familyId, String id);
 }

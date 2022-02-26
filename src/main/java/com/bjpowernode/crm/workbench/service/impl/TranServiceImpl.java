@@ -20,10 +20,11 @@ public class TranServiceImpl implements TranService {
     TranDao tranDao= SqlSessionUtil.getSqlSession().getMapper(TranDao.class);
     TranHistoryDao tranHistoryDao=SqlSessionUtil.getSqlSession().getMapper(TranHistoryDao.class);
     CustomerDao customerDao= SqlSessionUtil.getSqlSession().getMapper(CustomerDao.class);
-    public boolean save(Tran t, String customerName) {
+    public boolean save(Tran t,String customerName,String customerId) {
         boolean flag=true;
-        Customer cus=customerDao.getCustomerByName(customerName);
-        if(cus==null){
+        Customer cus=null;
+      //  Customer cus=customerDao.getCustomerByPhone(customerPhone);
+        if("".equals(customerId)){
             cus=new Customer();
             cus.setId(UUIDUtil.getUUID());
             cus.setName(customerName);
@@ -32,12 +33,15 @@ public class TranServiceImpl implements TranService {
             cus.setContactSummary(t.getContactSummary());
             cus.setNextContactTime(t.getNextContactTime());
             cus.setOwner(t.getOwner());
+            customerId=cus.getId();
             int count1=customerDao.save(cus);
             if(count1!=1){
                 flag=false;
             }
         }
-        t.setCustomerId(cus.getId());
+       // if("".equals(customerId)){t.setCustomerId(cus.getId());}else{t.setCustomerId(customerId);}
+        System.out.println(customerId+"++++++++++++++++++++++++++");
+        t.setCustomerId(customerId);
         int count2=tranDao.save(t);
         if(count2!=1){
             flag=false;

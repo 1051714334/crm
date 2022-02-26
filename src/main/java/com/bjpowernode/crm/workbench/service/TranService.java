@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface TranService {
 
-    boolean save(Tran t, String customerName);
+    boolean save(Tran t,String customerName,String customerId);
 
     Tran detail(String id);
 

@@ -4,6 +4,12 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.bjpowernode.crm.workbench.dao.CustomerDao">
+    <select id="getCustomerById" resultType="customer">
+        select * from tbl_customer where  familyId=#{id}
+    </select>
+    <select id="getCustomerByFamilyId" resultType="customer">
+        select * from tbl_customer where id=#{familyId}
+    </select>
     <update id="update" >
         update tbl_customer set
         owner=#{owner},
@@ -32,7 +38,13 @@
           cus.createBy,
           cus.createTime,
           cus.editBy,
-          cus.editTime
+          cus.editTime,
+          cus.childrenAddress,
+          cus.childrenPhone,
+          cus.childrenName,
+          cus.nPeopleName,
+          cus.nPeoplePhone,
+          cus.familyId
         from tbl_customer cus join tbl_user u on cus.owner=u.id
      where cus.id=#{id}
     </select>
@@ -53,7 +65,6 @@
         description,
         banquetDate,
         banquetVenue,
-        nature,
         childrenName,
         nPeopleName,
         nPeoplePhone,
@@ -74,7 +85,6 @@
         #{description},
         #{banquetDate},
         #{banquetVenue},
-        #{nature},
         #{childrenName},
         #{nPeopleName},
         #{nPeoplePhone},

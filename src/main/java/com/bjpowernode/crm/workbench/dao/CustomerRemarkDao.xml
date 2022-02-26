@@ -4,6 +4,37 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.bjpowernode.crm.workbench.dao.CustomerRemarkDao">
+        <update id="updateRemark">
+                update tbl_customer_remark set
+                 noteContent=#{noteContent},
+                editTime=#{editTime},
+                editBy=#{editBy},
+                editFlag=#{editFlag}
+              where   id=#{id}
+        </update>
+        <delete id="deleteRemark">
+                delete from tbl_customer_remark where id=#{id}
+        </delete>
+        <insert id="saveRemark">
+                insert into tbl_customer_remark (
+                id,
+                noteContent,
+                createBy,
+                createTime,
+                editFlag,
+                customerId
+                )values(
+                  #{id},
+                  #{noteContent},
+                  #{createBy},
+                  #{createTime},
+                  #{editFlag},
+                  #{customerId}
+                )
+        </insert>
+        <select id="showRemarkList" resultType="customerRemark">
+                select * from tbl_customer_remark where customerId=#{customerId}
+        </select>
 	<insert id="save" >
         insert into tbl_customer_remark(
         id,

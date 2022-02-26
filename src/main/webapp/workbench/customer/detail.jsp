@@ -169,7 +169,45 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
             });
         });
 		tranList();
+		getScusList();
 	});
+	function getScusList() {
+		$.ajax({
+			url:"workbench/customer/getScusList.do",
+			data:{
+				"familyId":"${cus.familyId}",
+				"id":"${cus.id}"
+			},
+			type:"get",
+			dataType:"json",
+			success:function (data) {
+				alert(data.success);
+				alert(data.n);
+				alert(data.o);
+				if(data.success){
+				if(data.n!=undefined){
+					var html='';
+					$.each(data.n,function (i,neve) {
+						html+='<td><a href="workbench/customer/detail.do?id='+neve.id+'"  style="text-decoration: none;">晚辈-'+neve.name+'</a></td>';
+						html+='<td>'+neve.website+'</td>';
+						html+='<td>'+neve.phone+'</td>';
+						alert(i);
+					});
+					$("#nCustomerBody").html(html);
+				}
+				if(data.o!=undefined){
+					var html='';
+					$.each(data.o,function (i,neve) {
+						html+='<td><a href="workbench/customer/detail.do?id='+neve.id+'"  style="text-decoration: none;">长辈-'+neve.name+'</a></td>';
+						html+='<td>'+neve.website+'</td>';
+						html+='<td>'+neve.phone+'</td>';
+					});
+					$("#oCustomerBody").html(html);
+				}
+			}
+			}
+		});
+	}
 	function tranList() {
 		$.ajax({
 			url:"workbench/customer/getTranList.do",
@@ -602,6 +640,25 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${cus.editBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${cus.editTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
+        <div style="position: relative; left: 40px; height: 30px; top: 30px;">
+            <div style="width: 300px; color: gray;">子女</div>
+            <div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${cus.childrenName}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${cus.childrenPhone}</small></div>
+            <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
+        </div>
+		<div style="position: relative; left: 40px; height: 30px; top: 30px;">
+			<div style="width: 300px; color: gray;">子女配偶</div>
+			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${cus.nPeopleName}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${cus.nPeoplePhone}</small></div>
+			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
+		</div>
+		<div style="position: relative; left: 40px; height: 30px; top: 40px;">
+			<div style="width: 300px; color: gray;">子女城市</div>
+			<div style="width: 630px;position: relative; left: 200px; top: -20px;">
+				<b>
+					${cus.childrenAddress}
+				</b>
+			</div>
+			<div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
+		</div>
         <div style="position: relative; left: 40px; height: 30px; top: 40px;">
             <div style="width: 300px; color: gray;">联系纪要</div>
             <div style="width: 630px;position: relative; left: 200px; top: -20px;">
@@ -716,43 +773,61 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			</div>
 			
 			<div>
-				<a href="transaction/save.html" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>新建交易</a>
+				<a href="workbench/transaction/add.do?id=${cus.id}" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>新建交易</a>
 			</div>
 		</div>
 	</div>
 	
-	<!-- 联系人 -->
-	<%--<div>
+	<!-- 家族关系人 -->
+	<div>
 		<div style="position: relative; top: 20px; left: 40px;">
 			<div class="page-header">
 				<h4>联系人</h4>
 			</div>
 			<div style="position: relative;top: 0px;">
-				<table id="activityTable" class="table table-hover" style="width: 900px;">
+				<table id="activityTable1" class="table table-hover" style="width: 900px;">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td>名称</td>
+							<td>姓名</td>
 							<td>邮箱</td>
 							<td>手机</td>
 							<td></td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td><a href="contacts/detail.html" style="text-decoration: none;">李四</a></td>
+					<tbody id="nCustomerBody">
+						<%--<tr>
+							<td><a href="contacts/detail.html" id="${cus.id}" style="text-decoration: none;">李四</a></td>
 							<td>lisi@bjpowernode.com</td>
 							<td>13543645364</td>
 							<td><a href="javascript:void(0);" data-toggle="modal" data-target="#removeContactsModal" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>
-						</tr>
+						</tr>--%>
+					</tbody>
+				</table>
+				<table id="activityTable" class="table table-hover" style="width: 900px;">
+					<thead>
+					<tr style="color: #B3B3B3;">
+						<td>姓名</td>
+						<td>邮箱</td>
+						<td>手机</td>
+						<td></td>
+					</tr>
+					</thead>
+					<tbody id="oCustomerBody">
+					<%--<tr>
+                        <td><a href="contacts/detail.html" id="${cus.id}" style="text-decoration: none;">李四</a></td>
+                        <td>lisi@bjpowernode.com</td>
+                        <td>13543645364</td>
+                        <td><a href="javascript:void(0);" data-toggle="modal" data-target="#removeContactsModal" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>删除</a></td>
+                    </tr>--%>
 					</tbody>
 				</table>
 			</div>
 			
-			<div>
-				<a href="javascript:void(0);" data-toggle="modal" data-target="#createContactsModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>新建联系人</a>
-			</div>
+			<%--<div>
+				<a href="javascript:\void(0);" data-toggle="modal" data-target="#createContactsModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>新建联系人</a>
+			</div>--%>
 		</div>
-	</div>--%>
+	</div>
 	
 	<div style="height: 200px;"></div>
 </body>
