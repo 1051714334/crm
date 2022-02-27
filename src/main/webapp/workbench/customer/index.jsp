@@ -445,7 +445,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                             <div class="form-group">
                                 <label for="create-nextContactTime2" class="col-sm-2 control-label">下次联系时间</label>
                                 <div class="col-sm-10" style="width: 300px;">
-                                    <input type="text" class="form-control" id="edit-nextContactTime">
+                                    <input type="text" class="form-control time1" id="edit-nextContactTime">
                                 </div>
                             </div>
                         </div>
@@ -513,13 +513,13 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">开始日期</div>
-				      <input class="form-control" id="search-startDate" type="text">
+				      <input class="form-control time" id="search-startDate" type="text">
 				    </div>
 				  </div>
 					<div class="form-group">
 						<div class="input-group">
 							<div class="input-group-addon">结束日期</div>
-							<input class="form-control" id="search-endDate" type="text">
+							<input class="form-control time" id="search-endDate" type="text">
 						</div>
 					</div>
 				  

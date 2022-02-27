@@ -11,6 +11,9 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+	<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 
 <script type="text/javascript">
 
@@ -18,6 +21,14 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	var cancelAndSaveBtnDefault = true;
 	
 	$(function(){
+        $(".time1").datetimepicker({
+            minView: "month",
+            language:  'zh-CN',
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            todayBtn: true,
+            pickerPosition: "top-left"
+        });
 		$("#editBtn").click(function () {
 				$.ajax({
 					url:"workbench/customer/getUserListAndCustomer.do",
@@ -181,9 +192,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			type:"get",
 			dataType:"json",
 			success:function (data) {
-				alert(data.success);
-				alert(data.n);
-				alert(data.o);
 				if(data.success){
 				if(data.n!=undefined){
 					var html='';
@@ -191,7 +199,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						html+='<td><a href="workbench/customer/detail.do?id='+neve.id+'"  style="text-decoration: none;">晚辈-'+neve.name+'</a></td>';
 						html+='<td>'+neve.website+'</td>';
 						html+='<td>'+neve.phone+'</td>';
-						alert(i);
 					});
 					$("#nCustomerBody").html(html);
 				}
@@ -570,7 +577,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                             <div class="form-group">
                                 <label for="create-nextContactTime2" class="col-sm-2 control-label">下次联系时间</label>
                                 <div class="col-sm-10" style="width: 300px;">
-                                    <input type="text" class="form-control" id="edit-nextContactTime1">
+                                    <input type="text" class="form-control time1" id="edit-nextContactTime1">
                                 </div>
                             </div>
                         </div>
