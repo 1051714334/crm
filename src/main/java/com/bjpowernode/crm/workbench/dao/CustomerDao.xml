@@ -63,8 +63,6 @@
         contactSummary,
         nextContactTime,
         description,
-        banquetDate,
-        banquetVenue,
         childrenName,
         nPeopleName,
         nPeoplePhone,
@@ -83,8 +81,6 @@
         #{contactSummary},
         #{nextContactTime},
         #{description},
-        #{banquetDate},
-        #{banquetVenue},
         #{childrenName},
         #{nPeopleName},
         #{nPeoplePhone},
@@ -116,10 +112,10 @@
                 and cus.phone=#{phone}
             </if>
             <if test="startDate!=null and startDate!=''">
-                and cus.banquetDate &gt; #{startDate}
+                and t.expectedDate &gt; #{startDate}
             </if>
             <if test="endDate!=null and endDate!=''">
-                and cus.banquetDate &lt; #{endDate}
+                and t.expectedDate &lt; #{endDate}
             </if>
         </where>
         order by cus.createTime desc

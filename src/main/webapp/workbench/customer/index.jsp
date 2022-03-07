@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 	request.getServerPort() + request.getContextPath() + "/";
 %>
@@ -283,10 +284,13 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
                             <label for="create-customerIdentity" class="col-sm-2 control-label">宴会性质<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <select class="form-control" id="create-nature">
-                                    <option value="婚宴">婚宴</option>
+                                    <%--<option value="婚宴">婚宴</option>
                                     <option value="回门">回门</option>
                                     <option value="周岁">周岁</option>
-                                    <option value="十二">十二</option>
+                                    <option value="十二">十二</option>--%>
+                                    <c:forEach items="${yTypeList}" var="a">
+                                        <option value="${a.value}">${a.text}</option>
+                                    </c:forEach>
                                 </select>
                             </div>
 

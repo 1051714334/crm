@@ -23,7 +23,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 <script type="text/javascript" src="jquery/bs_typeahead/bootstrap3-typeahead.min.js"></script>
 	<script>
 	$(function () {
-		alert("${cusId}");
 		$("#create-customerName").typeahead({
 			source: function (query, process) {
 				$.post(
@@ -70,6 +69,9 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		$("#saveBtn").click(function () {
             $("#tranForm").submit();
         });
+		$("#cancelBtn").click(function () {
+			history.go(-1);
+		});
 	});
 </script>
 </head>
@@ -179,7 +181,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		<h3>创建交易</h3>
 	  	<div style="position: relative; top: -40px; left: 70%;">
 			<button type="button" class="btn btn-primary" id="saveBtn">保存</button>
-			<button type="button" class="btn btn-default">取消</button>
+			<button type="button" class="btn btn-default" id="cancelBtn">取消</button>
 		</div>
 		<hr style="position: relative; top: -40px;">
 	</div>
