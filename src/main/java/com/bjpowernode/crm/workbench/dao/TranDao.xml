@@ -4,6 +4,24 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.bjpowernode.crm.workbench.dao.TranDao">
+    <update id="update">
+        update tbl_tran set
+        owner=#{owner},
+        money=#{money},
+        name=#{name},
+        expectedDate=#{expectedDate},
+        stage=#{stage},
+        type=#{type},
+        editBy=#{editBy},
+        editTime=#{editTime},
+        description=#{description},
+        contactSummary=#{contactSummary},
+        nextContactTime=#{nextContactTime}
+        where id=#{id}
+    </update>
+    <select id="getById" resultType="tran">
+        select * from tbl_tran where id=#{id}
+    </select>
     <select id="getTranList" resultType="tran">
         select
         t.id,
@@ -50,7 +68,9 @@
                     tran.createTime,
                     tran.description,
                     tran.contactSummary,
-                    tran.nextContactTime
+                    tran.nextContactTime,
+                    tran.editBy,
+                    tran.editTime
                 from tbl_tran tran
                 join tbl_user user
                 on tran.owner=user.id

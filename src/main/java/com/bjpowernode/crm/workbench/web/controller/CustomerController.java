@@ -148,7 +148,17 @@ public class CustomerController extends HttpServlet {
                 String address=request.getParameter("address");
                 String editBy=((User)request.getSession().getAttribute("user")).getName();
                 String editDate=DateTimeUtil.getSysTime();
+                String childrenName=request.getParameter("childrenName");
+                String childrenPhone=request.getParameter("childrenPhone");
+                String nPeopleName=request.getParameter("nPeopleName");
+                String nPeoplePhone=request.getParameter("nPeoplePhone");
+                String childrenAddress=request.getParameter("childrenAddress");
                 Customer cus=new Customer();
+                cus.setChildrenAddress(childrenAddress);
+                cus.setChildrenPhone(childrenPhone);
+                cus.setChildrenName(childrenName);
+                cus.setnPeoplePhone(nPeoplePhone);
+                cus.setnPeopleName(nPeopleName);
                 cus.setEditBy(editBy);
                 cus.setEditTime(editDate);
                 cus.setId(id);

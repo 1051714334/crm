@@ -18,4 +18,8 @@ public interface TranDao {
     List<Map<String,Object>> getCharts();
 
     List<Tran> getTranList(String customerId);
+
+    Tran getById(String id);
+
+    int update(Tran t);
 }

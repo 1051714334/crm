@@ -140,7 +140,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						$("#remark").val("");
 						var html='';
 						html += '<div id="'+data.cus.id+'" class="remarkDiv" style="height: 60px;">';
-						html += '<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">';
+						html += '<img title="程序员：亓志兵" src="image/user-thumbnail.png" style="width: 30px; height:30px;">';
 						html += '<div style="position: relative; top: -40px; left: 40px;" >';
 						html += '<h5 id="n'+data.cus.id+'">'+data.cus.noteContent+'</h5>';
 						html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${cus.name}</b> <small style="color: gray;" id="s'+data.cus.id+'"> '+data.cus.createTime+' 由'+data.cus.createBy+'</small>';
@@ -233,6 +233,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					html+='<td>'+n.stage+'</td>';
 					html+='<td>90</td>';
 					html+='<td>'+n.expectedDate+'</td>';
+					html+='<td>'+n.name+'</td>';
 					html+='<td>'+n.type+'</td>';
 					html+='<td>'+n.deposit+'</td>';
 					html+='</tr>';
@@ -760,6 +761,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							<td>阶段</td>
 							<td>可能性</td>
 							<td>宴会日期</td>
+							<td>宴会地点</td>
 							<td>宴会类型</td>
 							<td>宴会订金</td>
 							<td></td>

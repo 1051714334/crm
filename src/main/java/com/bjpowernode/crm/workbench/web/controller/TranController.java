@@ -41,7 +41,55 @@ public class TranController extends HttpServlet {
             changeStage(request,response);
         }else if("/workbench/transaction/getCharts.do".equals(path)){
             getCharts(request,response);
+        }else if("/workbench/transaction/edit.do".equals(path)){
+            edit(request,response);
+        }else if("/workbench/transaction/upDate.do".equals(path)){
+            upDate(request,response);
         }
+    }
+
+    private void upDate(HttpServletRequest request, HttpServletResponse response)throws IOException, ServletException {
+        TranService ts= (TranService) ServiceFactory.getService(new TranServiceImpl());
+        String id=request.getParameter("id");
+        String owner=request.getParameter("owner");
+        String money=request.getParameter("money");
+        String name=request.getParameter("name");
+        String expectedDate=request.getParameter("expectedDate");
+        String stage=request.getParameter("stage");
+        String type=request.getParameter("type");
+        String deposit=request.getParameter("deposit");
+        String editBy=((User)request.getSession().getAttribute("user")).getName();
+        String editTime=DateTimeUtil.getSysTime();
+        String description=request.getParameter("description");
+        String contactSummary=request.getParameter("contactSummary");
+        String nextContactTime=request.getParameter("nextContactTime");
+        Tran t=new Tran();
+        t.setExpectedDate(expectedDate);
+        t.setStage(stage);
+        t.setOwner(owner);
+        t.setMoney(money);
+        t.setDescription(description);
+        t.setEditBy(editBy);
+        t.setEditTime(editTime);
+        t.setId(id);
+        t.setNextContactTime(nextContactTime);
+        t.setName(name);
+        t.setDeposit(deposit);
+        t.setType(type);
+        t.setContactSummary(contactSummary);
+        boolean flag=ts.update(t);
+        if(flag){
+        response.sendRedirect(request.getContextPath()+"/workbench/transaction/detail.do?id="+t.getId());
+        }
+    }
+
+    private void edit(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+        String id=request.getParameter("id");
+        Map<String,String> pMap=(Map<String,String>)request.getServletContext().getAttribute("pMap");
+        TranService ts= (TranService) ServiceFactory.getService(new TranServiceImpl());
+        Map<String,Object> tMap =ts.getById(id,pMap);
+        request.setAttribute("tMap",tMap);
+        request.getRequestDispatcher("/workbench/transaction/edit.jsp").forward(request,response);
     }
 
     private void getCharts(HttpServletRequest request, HttpServletResponse response) {

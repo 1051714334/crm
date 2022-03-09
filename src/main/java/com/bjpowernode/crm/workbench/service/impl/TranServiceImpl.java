@@ -1,5 +1,7 @@
 package com.bjpowernode.crm.workbench.service.impl;
 
+import com.bjpowernode.crm.settings.dao.UserDao;
+import com.bjpowernode.crm.settings.domain.User;
 import com.bjpowernode.crm.utils.DateTimeUtil;
 import com.bjpowernode.crm.utils.SqlSessionUtil;
 import com.bjpowernode.crm.utils.UUIDUtil;
@@ -20,6 +22,7 @@ public class TranServiceImpl implements TranService {
     TranDao tranDao= SqlSessionUtil.getSqlSession().getMapper(TranDao.class);
     TranHistoryDao tranHistoryDao=SqlSessionUtil.getSqlSession().getMapper(TranHistoryDao.class);
     CustomerDao customerDao= SqlSessionUtil.getSqlSession().getMapper(CustomerDao.class);
+    UserDao userDao=SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
     public boolean save(Tran t,String customerName,String customerId) {
         boolean flag=true;
         Customer cus=null;
@@ -98,6 +101,25 @@ public class TranServiceImpl implements TranService {
         map.put("total",total);
         map.put("dataList",tranList);
         return map;
+    }
+
+    public Map<String,Object> getById(String id,Map<String,String> pMap) {
+        Tran t= tranDao.getById(id);
+        t.setPossibility(pMap.get(t.getStage()));
+        List<User> uList= userDao.getUserList();
+        Map<String,Object> map=new HashMap<String, Object>();
+        map.put("t",t);
+        map.put("uList",uList);
+        return map;
+    }
+
+    public boolean update(Tran t) {
+        boolean flag=true;
+       int count= tranDao.update(t);
+       if(count!=1){
+           flag=false;
+       }
+       return flag;
     }
 
 

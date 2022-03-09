@@ -144,6 +144,11 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						$("#edit-contactSummary").val(data.cus.contactSummary);
 						$("#edit-nextContactTime").val(data.cus.nextContactTime);
 						$("#edit-address").val(data.cus.address);
+						$("#edit-childrenName").val(data.cus.childrenName);
+						$("#edit-childrenPhone").val(data.cus.childrenPhone);
+						$("#edit-nPeopleName").val(data.cus.nPeopleName);
+						$("#edit-nPeoplePhone").val(data.cus.nPeoplePhone);
+						$("#edit-childrenAddress").val(data.cus.childrenAddress);
 						$("#editCustomerModal").modal("show");
 
 					}
@@ -164,7 +169,12 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			"description":$.trim($("#edit-description").val()),
 			"contactSummary":$.trim($("#edit-contactSummary").val()),
 			"nextContactTime":$.trim($("#edit-nextContactTime").val()),
-			"address":$.trim($("#edit-address").val())
+			"address":$.trim($("#edit-address").val()),
+			"childrenName":$.trim($("#edit-childrenName").val()),
+			"childrenPhone":$.trim($("#edit-childrenPhone").val()),
+			"nPeopleName":$.trim($("#edit-nPeopleName").val()),
+			"nPeoplePhone":$.trim($("#edit-nPeoplePhone").val()),
+			"childrenAddress":$.trim($("#edit-childrenAddress").val())
 				},
 				type:"post",
 				dataType:"json",
@@ -414,13 +424,16 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 								  <option>wangwu</option>--%>
 								</select>
 							</div>
-							<label for="edit-customerName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="edit-customerName" class="col-sm-2 control-label">客户名称<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="edit-name">
 							</div>
 						</div>
+
+
+
 						<div class="form-group">
-                            <label for="edit-website" class="col-sm-2 control-label">个人邮箱</label>
+                            <label for="edit-website" class="col-sm-2 control-label">电子邮箱</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="edit-website">
                             </div>
@@ -429,7 +442,32 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 								<input type="text" class="form-control" id="edit-phone">
 							</div>
 						</div>
-						
+						<div class="form-group">
+							<label for="create-website" class="col-sm-2 control-label">子/女姓名</label>
+							<div class="col-sm-10" style="width: 300px;">
+								<input type="text" class="form-control" id="edit-childrenName">
+							</div>
+							<label for="create-phone" class="col-sm-2 control-label">子/女电话</label>
+							<div class="col-sm-10" style="width: 300px;">
+								<input type="text" class="form-control" id="edit-childrenPhone">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="create-website" class="col-sm-2 control-label">新郎/娘姓名</label>
+							<div class="col-sm-10" style="width: 300px;">
+								<input type="text" class="form-control" id="edit-nPeopleName">
+							</div>
+							<label for="create-phone" class="col-sm-2 control-label">新郎/娘电话</label>
+							<div class="col-sm-10" style="width: 300px;">
+								<input type="text" class="form-control" id="edit-nPeoplePhone">
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="create-phone" class="col-sm-2 control-label">子女工作城市</label>
+							<div class="col-sm-10" style="width: 300px;">
+								<input type="text" class="form-control" id="edit-childrenAddress">
+							</div>
+						</div>
 						<div class="form-group">
 							<label for="edit-describe" class="col-sm-2 control-label">描述</label>
 							<div class="col-sm-10" style="width: 81%;">

@@ -21,7 +21,12 @@
         nextContactTime=#{nextContactTime},
         address=#{address},
         editBy=#{editBy},
-        editTime=#{editTime}
+        editTime=#{editTime},
+        childrenName=#{childrenName},
+        childrenPhone=#{childrenPhone},
+        nPeopleName=#{nPeopleName},
+        nPeoplePhone=#{nPeoplePhone},
+        childrenAddress=#{childrenAddress}
         where id=#{id}
     </update>
     <select id="getById" resultType="customer">

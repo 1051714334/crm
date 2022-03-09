@@ -83,6 +83,8 @@
         <url-pattern>/workbench/transaction/getHistoryListByTranId.do</url-pattern>
         <url-pattern>/workbench/transaction/changeStage.do</url-pattern>
         <url-pattern>/workbench/transaction/getCharts.do</url-pattern>
+        <url-pattern>/workbench/transaction/edit.do</url-pattern>
+        <url-pattern>/workbench/transaction/upDate.do</url-pattern>
     </servlet-mapping>
     <!--客户模块-->
     <servlet>

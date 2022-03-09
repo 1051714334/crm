@@ -19,4 +19,8 @@ public interface TranService {
     boolean changeStage(Tran t);
 
     Map<String, Object> getCharts();
+
+    Map<String,Object> getById(String id,Map<String,String> pMap);
+
+    boolean update(Tran t);
 }
